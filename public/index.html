@@ -7,32 +7,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-main: #0a0612; 
-            --text-main: #e2d9f3;     
-            --accent: #a855f7;        
-            --border-dark: #1a1126;
-            --shadow-strong: 5px 5px 0px #000000;
+            --bg-main: #0a0612; --text-main: #e2d9f3; --accent: #a855f7; --border-dark: #1a1126; --shadow-strong: 5px 5px 0px #000000;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
         body { background-color: var(--bg-main); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; }
 
-        /* Video Background */
         #bg-video { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -2; }
         .bg-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(18, 12, 28, 0.85); z-index: -1; pointer-events: none; }
 
         /* SPLASH & LOGIN */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-main); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s; }
         .splash-title { font-size: 3.5rem; font-weight: 700; color: var(--accent); text-shadow: 4px 4px 0px #000; }
-        
         #loginScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10, 6, 18, 0.9); display: none; justify-content: center; align-items: center; z-index: 9000; opacity: 0; transition: opacity 0.5s; }
         .login-box { background: #1a1126; border: 4px solid var(--accent); padding: 40px 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 400px; box-shadow: 8px 8px 0px var(--accent); }
         .login-box h2 { color: var(--text-main); margin-bottom: 10px; font-size: 2.5rem; font-weight: 700; text-shadow: 2px 2px 0px #000; }
         .login-box p { color: #9b8bb4; margin-bottom: 25px; font-weight: 600; }
         .login-box input { width: 100%; padding: 15px; border-radius: 5px; border: 3px solid #000; background: #0a0612; color: white; font-size: 16px; outline: none; margin-bottom: 20px; font-weight: 600; box-shadow: 4px 4px 0px #000; transition: 0.1s; }
         .login-box input:focus { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000; }
-        .login-btn { width: 100%; padding: 15px; border-radius: 5px; border: 3px solid #000; background: var(--accent); color: white; font-weight: 700; font-size: 18px; cursor: pointer; box-shadow: 5px 5px 0px #000; transition: 0.1s; }
+        .login-btn { width: 100%; padding: 15px; border-radius: 5px; border: 3px solid #000; background: var(--accent); color: white; font-weight: 700; font-size: 18px; cursor: pointer; box-shadow: 5px 5px 0px #000; transition: 0.1s; margin-bottom: 10px; }
         .login-btn:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0px #000; }
+        .login-google-btn { width: 100%; padding: 15px; border-radius: 5px; border: 3px solid #fff; background: #fff; color: #000; font-weight: 700; font-size: 16px; cursor: pointer; box-shadow: 5px 5px 0px #000; transition: 0.1s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .login-google-btn:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0px #000; }
 
         /* SIDEBAR */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 45; }
@@ -47,10 +42,8 @@
         .history-item { padding: 12px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; color: #9b8bb4; background: #0a0612; border: 2px solid #333; transition: 0.2s; }
         .history-item:hover { border-color: var(--accent); color: white; }
         .history-item.active { background: var(--accent); color: white; border-color: #000; box-shadow: 3px 3px 0px #000; }
-        
         .dev-panel-btn { margin-top: 10px; background: #222; border: 3px solid var(--accent); color: var(--accent); padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; box-shadow: 3px 3px 0px #000; width: 100%; transition: 0.1s; }
         .dev-panel-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
-        
         .logout-btn { margin-top: 15px; background: #ff4444; border: 3px solid #000; color: white; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 15px; box-shadow: 4px 4px 0px #000; transition: 0.1s; }
         .logout-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0px #000; }
 
@@ -61,42 +54,26 @@
         .info-btn { background: var(--accent); border: 3px solid #000; padding: 8px 15px; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0px #000; transition: 0.1s; display: flex; align-items: center; gap: 5px; }
         .info-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
 
-        /* BANNER NOTIF */
         #globalNotif { display: none; background: #ffd63a; color: #000; text-align: center; padding: 10px; font-weight: bold; border-bottom: 4px solid #000; font-size: 14px; z-index: 100; }
 
-        .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+        .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; padding-bottom: 20px; }
         .message { display: flex; max-width: 800px; margin: 0 auto; width: 100%; gap: 12px; align-items: flex-end; }
         .message.user { justify-content: flex-end; flex-direction: row-reverse; }
         .message.ai { justify-content: flex-start; }
         .avatar-ai { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; border: 3px solid #000; box-shadow: 3px 3px 0px #000; flex-shrink: 0; }
-        
-        /* BUBBLE CHAT NEO-BRUTALISM */
         .bubble { position: relative; padding: 15px 20px; border-radius: 8px; font-size: 15px; line-height: 1.6; max-width: 80%; word-wrap: break-word; font-weight: 600; border: 3px solid #000; box-shadow: 5px 5px 0px #000; display: flex; flex-direction: column; z-index: 1; }
         .bubble.user { background: var(--accent); color: #fff; border-bottom-right-radius: 0px; }
-        
-        /* BACKGROUND AI + KACA GELAP */
-        .bubble.ai { 
-            background-image: url('https://cdn.phototourl.com/member/2026-11-11-236aba0a-22c1-49fd-878c-9d2c4a9b3c6d.webp'); 
-            background-size: cover; background-position: center; 
-            color: var(--text-main); border-bottom-left-radius: 0px; 
-        }
-        .bubble.ai::before { 
-            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
-            background: rgba(18, 12, 28, 0.85); backdrop-filter: blur(4px); 
-            z-index: -1; border-radius: 5px; 
-        }
-        
+        .bubble.ai { background-image: url('https://cdn.phototourl.com/member/2026-11-11-236aba0a-22c1-49fd-878c-9d2c4a9b3c6d.webp'); background-size: cover; background-position: center; color: var(--text-main); border-bottom-left-radius: 0px; }
+        .bubble.ai::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(18, 12, 28, 0.85); backdrop-filter: blur(4px); z-index: -1; border-radius: 5px; }
         .chat-text { position: relative; z-index: 2; text-shadow: 1px 1px 3px #000; }
         .chat-text a { color: #60a5fa; text-decoration: underline; }
         .chat-text video, .chat-text img { max-width: 100%; border-radius: 5px; margin-top: 10px; border: 2px solid #000; box-shadow: 3px 3px 0px #000; }
 
-        /* INPUT & DOCK */
-        .input-container { padding: 10px 15px 15px 15px; width: 100%; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+        .input-container { position: fixed; bottom: 0; left: 0; right: 0; padding: 10px 15px 15px 15px; width: 100%; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; background: linear-gradient(to top, rgba(10, 6, 18, 1) 70%, transparent); z-index: 20; }
         .menu-toggle-bar { display: flex; gap: 10px; margin-bottom: 5px; }
         .menu-toggle-bar button { flex: 1; padding: 10px; border: 3px solid #000; border-radius: 8px; background: #1a1126; color: white; font-weight: bold; cursor: pointer; box-shadow: 3px 3px 0px #000; transition: 0.1s; }
         .menu-toggle-bar button.active { background: var(--accent); }
         .menu-toggle-bar button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
-
         .dock-container { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
         .dock-container::-webkit-scrollbar { display: none; }
         .dock-btn { background: #1a1126; color: var(--text-main); border: 3px solid #000; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.1s; box-shadow: 3px 3px 0px #000; display: flex; align-items: center; gap: 6px; }
@@ -105,22 +82,18 @@
         .dock-btn.info-ai-btn { background: #222; color: var(--accent); border-color: var(--accent); }
         .dock-btn.report-btn { background: #ff4444; color: white; border-color: #000; }
 
-        /* KOTAK FITUR */
         #fiturPanel { display: none; flex-direction: column; gap: 15px; margin-bottom: 15px; background: #1a1126; border: 4px solid var(--accent); border-radius: 15px; padding: 20px; box-shadow: 8px 8px 0px #000; }
         #fiturPanel h3 { color: #fff; font-size: 1.2rem; margin-bottom: 5px; text-shadow: 2px 2px 0px #000; }
         #fiturPanel label { color: #9b8bb4; font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; display: block; }
         .brutal-input { width: 100%; padding: 12px 15px; border: 3px solid #000; border-radius: 8px; background: #0a0612; color: #fff; font-size: 15px; font-weight: 600; box-shadow: 3px 3px 0px #000; outline: none; transition: 0.1s; }
         .brutal-input:focus { transform: translate(1px, 1px); box-shadow: 1px 1px 0px #000; }
-        
         .action-row { display: flex; gap: 10px; margin-top: 10px; }
         .brutal-action-btn { flex: 1; padding: 12px; border: 3px solid #000; border-radius: 8px; background: #fff; color: #000; font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0px #000; transition: 0.1s; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .brutal-action-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
         .brutal-action-btn.pink { background: #ff5da2; color: white; }
-        
         .preview-box { margin-top: 10px; padding: 15px; background: #0a0612; border: 3px dashed #444; border-radius: 8px; text-align: center; color: #666; font-weight: bold; display: none; }
         .preview-box video, .preview-box img { max-width: 100%; border-radius: 5px; border: 2px solid #000; box-shadow: 3px 3px 0px #000; }
 
-        /* Input Chat Bawah */
         .chat-input-wrapper { display: flex; flex-direction: column; gap: 10px; }
         .input-box { background: #1a1126; border-radius: 8px; padding: 10px 15px; display: flex; align-items: center; gap: 12px; border: 3px solid var(--accent); box-shadow: 5px 5px 0px #000; }
         textarea { flex: 1; background: transparent; border: none; color: var(--text-main); font-size: 16px; font-weight: 600; resize: none; max-height: 100px; outline: none; padding: 5px 0; }
@@ -130,7 +103,6 @@
         .send-btn { background: var(--accent); color: white; border: 3px solid #000; width: 45px; height: 45px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.1s; box-shadow: 3px 3px 0px #000; flex-shrink: 0; font-size: 20px; }
         .send-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
         .send-btn:disabled { background: #4c3a66; cursor: not-allowed; }
-
         .file-preview { display: none; margin-bottom: 5px; padding: 10px 15px; background: #1a1126; border: 3px solid var(--accent); border-radius: 8px; font-size: 14px; font-weight: 700; color: var(--accent); align-items: center; justify-content: space-between; box-shadow: 3px 3px 0px #000; }
         .file-preview button { background: #ff4444; border: 2px solid #000; color: white; font-weight: bold; cursor: pointer; padding: 3px 10px; border-radius: 5px; box-shadow: 2px 2px 0px #000; }
 
@@ -139,7 +111,6 @@
         .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-        /* MODAL INFO */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: #1a1126; border: 4px solid var(--accent); border-radius: 15px; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto; padding: 30px; box-shadow: 10px 10px 0px #000; position: relative; }
         .close-modal { position: sticky; top: 0; float: right; background: #ff4444; border: 3px solid #000; color: white; font-weight: 900; font-size: 20px; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; box-shadow: 3px 3px 0px #000; }
@@ -169,6 +140,8 @@
             .main-chat { height: calc(100vh - 70px); width: 100%; }
             .top-bar { display: none; }
             .bubble { max-width: 90%; }
+            .chat-container { padding-bottom: 380px; }
+            .input-container { left: 0; right: 0; width: 100%; max-width: 100%; border-radius: 0; }
         }
     </style>
 </head>
@@ -181,6 +154,11 @@
             <p>Masukin nama lu, Bro!</p>
             <input type="text" id="usernameInput" placeholder="Nama lu..." maxlength="20">
             <button class="login-btn" onclick="login()">MASUK</button>
+            <!-- TOMBOL LOGIN GOOGLE -->
+            <button class="login-google-btn" onclick="loginGoogle()">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Masuk dengan Google
+            </button>
         </div>
     </div>
 
@@ -258,68 +236,62 @@
         </div>
     </main>
 
-    <!-- MODAL INFO WEB -->
+    <!-- MODAL INFO WEB (TEKS PANJANG) -->
     <div class="modal-overlay" id="modalInfoWeb">
         <div class="modal-content">
             <button class="close-modal" onclick="tutupInfoWeb()">X</button>
-            <h1>🚀 Panduan Lengkap: Dev & Aplikasi Multi-AI</h1>
-            
-            <h2>🧠 1. Pusat Multi-AI (Chatbot)</h2>
-            <p>Aplikasi ini bukan sekadar chatbot biasa — ini adalah hub multi-AI yang memungkinkan kamu berganti "otak" AI sesuai kebutuhan. Cukup tekan tombol AI di bagian bawah layar untuk berpindah model:</p>
-            <ul>
-                <li><strong>Ishimi 大:</strong> Karakter AI utama dengan kepribadian tegas, pintar, dan system prompt khusus.</li>
-                <li><strong>ChatGPT:</strong> Pertanyaan umum, menulis esai, atau bikin kode.</li>
-                <li><strong>Claude AI:</strong> Percakapan panjang & merapikan teks.</li>
-                <li><strong>DeepSeek & Qwen:</strong> Logika dan matematika.</li>
-            </ul>
-            <p><em>Fitur unggulan: Setiap AI punya memori (history) sendiri-sendiri. Jadi obrolanmu dengan ChatGPT tidak akan tercampur saat kamu pindah ke Ishimi. Kamu juga bisa membuat banyak thread obrolan baru lewat sidebar kiri.</em></p>
+            <h1>👨‍💻 Tentang Kami — Tim Developer</h1>
+            <p>Aplikasi ini dikembangkan oleh tim developer yang berdedikasi di balik layar. Berikut perkenalan lengkap kami:</p>
 
-            <h2>📥 2. Downloader Otomatis</h2>
-            <p>Selain untuk mengobrol, aplikasi ini juga berfungsi sebagai "tukang download". Tersedia tombol cepat untuk TikTok, Instagram, dan YouTube. Cukup paste link video, dan aplikasi akan memanggil API untuk mengambil video aslinya. Video langsung muncul dan bisa diputar di dalam chat — tanpa perlu membuka aplikasi lain.</p>
-
-            <h2>🎬 3. AI Video Enhancer (HD Video)</h2>
-            <p>Punya video buram atau kualitas rendah? Fitur HD Video memungkinkan kamu:</p>
-            <ul>
-                <li>Memasukkan link video atau mengunggah dari galeri.</li>
-                <li>Memilih target resolusi: 720p / 1080p / 4K.</li>
-                <li>Aplikasi memanggil API untuk meningkatkan kualitas video.</li>
-                <li>Kamu menerima link hasil video yang sudah di-upgrade.</li>
-            </ul>
-
-            <h2>📎 4. Dukungan Lampiran File</h2>
-            <p>Dalam mode chat AI, kamu bisa mengunggah gambar atau PDF melalui tombol klip kertas (📎) — mendukung percakapan berbasis dokumen dan visual.</p>
-
-            <h2>🎨 5. Desain Neo-Brutalism + Video Background</h2>
-            <p>Dari sisi tampilan, aplikasi ini mengusung gaya Neo-Brutalism (kotak tebal, bayangan keras, font bold). Kombinasi warna tema gelap (ungu/hitam) dipadukan dengan video background bergerak di belakangnya. Dilengkapi sistem login simpel dan animasi splash screen.</p>
-            <p><strong>Ringkasan:</strong> Satu aplikasi untuk chat multi-AI, download video sosial media, upgrade kualitas video ke HD/4K, dan upload file — semuanya dibungkus dalam desain Neo-Brutalism yang futuristik. 🎯</p>
-
-            <h2>👨‍💻 Tentang Kami — Tim Developer</h2>
-            <p>Aplikasi ini dikembangkan oleh dua developer yang berdedikasi di balik layar. Berikut perkenalan kami:</p>
             <div class="dev-box">
                 <h3>🔥 JriiRyzz — The Architect</h3>
-                <p>JriiRyzz adalah otak di balik fondasi aplikasi ini. Ia bertanggung jawab atas:</p>
+                <p>JriiRyzz adalah otak di balik fondasi aplikasi ini. Ia adalah tipe developer yang tidak pernah puas dengan "yang penting jalan" — baginya, setiap baris kode harus punya alasan, setiap fungsi harus efisien, dan setiap bug adalah tantangan yang harus ditaklukkan. Ia bertanggung jawab atas:</p>
                 <ul>
-                    <li><strong>Logika inti Multi-AI</strong> — merancang sistem switching antar model AI dengan manajemen history terpisah.</li>
-                    <li><strong>Integrasi API</strong> — menghubungkan aplikasi dengan API chatbot, downloader, dan AI Enhancer.</li>
-                    <li><strong>Arsitektur sistem</strong> — memastikan thread obrolan dan alur data berjalan mulus.</li>
+                    <li><strong>🧠 Logika inti Multi-AI</strong> — merancang sistem switching antar model AI (Ishimi, ChatGPT, Claude, DeepSeek, Qwen) dengan manajemen history terpisah per AI.</li>
+                    <li><strong>🔗 Integrasi API</strong> — menghubungkan aplikasi dengan berbagai layanan: API chatbot, downloader, hingga AI Video Enhancer.</li>
+                    <li><strong>⚙️ Arsitektur sistem</strong> — memastikan thread obrolan, sidebar, dan alur data berjalan mulus tanpa lag.</li>
+                    <li><strong>🛡️ Stabilitas & performa</strong> — optimasi, debugging, dan pengujian agar aplikasi tetap ringan dan responsif.</li>
+                    <li><strong>🔧 Maintenance berkelanjutan</strong> — terus memperbarui integrasi API dan menambal celah saat layanan pihak ketiga berubah.</li>
                 </ul>
-            </div>
-            <div class="dev-box">
-                <h3>🎨 NATA — The Visioner</h3>
-                <p>NATA adalah jiwa kreatif di balik tampilan aplikasi. Perannya meliputi:</p>
-                <ul>
-                    <li><strong>Desain Neo-Brutalism</strong> — merancang identitas visual dengan kotak tebal dan hard shadow.</li>
-                    <li><strong>Tema & Estetika</strong> — memadukan warna ungu/hitam dengan video background.</li>
-                    <li><strong>Pengalaman pengguna</strong> — splash screen animasi, sistem login simpel, dan tata letak nyaman.</li>
-                </ul>
+                <p><em>Kalau ada fitur yang "bekerja di belakang layar", kemungkinan besar itu hasil racikan JriiRyzz. 🛠️</em></p>
             </div>
 
-            <h2 style="border-bottom:none; text-align:center;">🤝 Kolaborasi Kami</h2>
-            <p style="text-align:center;"><strong>JriiRyzz membangun mesinnya. NATA memberi nyawanya.</strong><br>Bersama, kami menghadirkan satu aplikasi yang fungsional sekaligus berkarakter.</p>
-            
-            <p style="text-align:center; margin-top:20px; font-style:italic;">"Kami bikin ini bukan cuma buat jalan, tapi biar kamu betah pakai. Setiap fitur kami rancang dengan tujuan — dari ganti AI, download video, sampai upgrade ke 4K. Kalau ada masukan, kami selalu terbuka."<br>— JriiRyzz & NATA</p>
-            
-            <p style="text-align:center; color:var(--accent); font-weight:bold; margin-top:20px;">🚀 Dikembangkan dengan 🔥 oleh JriiRyzz & NATA — build with logic, design with soul.</p>
+            <div class="dev-box">
+                <h3>🎨 NATA — The Visioner</h3>
+                <p>NATA adalah jiwa kreatif di balik tampilan aplikasi. Baginya, desain bukan sekadar "biar kelihatan bagus" — tapi cara menyampaikan karakter dan membuat pengguna betah berlama-lama. Perannya meliputi:</p>
+                <ul>
+                    <li><strong>🎭 Desain Neo-Brutalism</strong> — merancang identitas visual dengan kotak tebal, border hitam, dan hard shadow yang ikonik.</li>
+                    <li><strong>🌈 Tema & Estetika</strong> — memadukan warna ungu/hitam gelap dengan video background bergerak.</li>
+                    <li><strong>✨ Pengalaman pengguna</strong> — splash screen animasi, sistem login simpel, dan tata letak yang nyaman dipakai.</li>
+                    <li><strong>📐 Konsistensi visual</strong> — memastikan setiap tombol, ikon, dan elemen UI terasa selaras.</li>
+                    <li><strong>🎬 Detail mikro</strong> — animasi transisi, hover effect, dan feedback visual yang membuat setiap interaksi terasa hidup.</li>
+                </ul>
+                <p><em>Kalau aplikasi ini terasa "enak dilihat dan dipakai", itu buah tangan NATA. 🎯</em></p>
+            </div>
+
+            <div class="dev-box">
+                <h3>🛠️ Tim Pendukung</h3>
+                <p>Selain JriiRyzz dan NATA, aplikasi ini juga didukung oleh para anggota tim pengembang yang turut berkontribusi:</p>
+                <ul>
+                    <li><strong>Said</strong> — anggota tim pengembang, membantu dalam pengembangan dan penyempurnaan fitur aplikasi.</li>
+                    <li><strong>Ifdal</strong> — anggota tim pengembang, turut serta dalam proses pengembangan dan pengujian.</li>
+                    <li><strong>Bima</strong> — anggota tim pengembang, berkontribusi dalam pengembangan dan peningkatan kualitas aplikasi.</li>
+                </ul>
+                <p><em>Mereka adalah bagian penting dari tim — bekerja di balik layar, memastikan setiap bagian aplikasi teruji dan siap dipakai. 🤝</em></p>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px; background: var(--accent); border: 3px solid #000; border-radius: 10px; padding: 15px;">
+                <h3 style="color: #000; margin-bottom: 10px;">🤝 Kolaborasi Kami</h3>
+                <p style="color: #000; font-weight: 700;">JriiRyzz membangun mesinnya. NATA memberi nyawanya.</p>
+                <p style="color: #000; font-weight: 500;">Bersama, kami menghadirkan satu aplikasi yang fungsional sekaligus berkarakter — bukan sekadar tools, tapi pengalaman.</p>
+                <p style="color: #000; font-weight: 500; margin-top: 10px;">Kami percaya bahwa aplikasi yang baik lahir dari kolaborasi: logika dan estetika harus berjalan seiring, bukan saling mengalahkan. Setiap fitur dirancang dengan tujuan, setiap detail dipikirkan, dan setiap masukan dari pengguna kami dengar.</p>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <h3>💬 Pesan Kami</h3>
+                <p style="font-style: italic;">"Kami bikin ini bukan cuma buat jalan, tapi biar kamu betah pakai. Setiap fitur kami rancang dengan tujuan — dari ganti AI, download video, sampai upgrade ke 4K. Kalau ada masukan, kami selalu terbuka."<br>— JriiRyzz & NATA</p>
+                <p style="color: var(--accent); font-weight: bold; margin-top: 15px;">🚀 Dikembangkan dengan 🔥 oleh JriiRyzz, NATA, Said, Ifdal & Bima — build with logic, design with soul.</p>
+            </div>
         </div>
     </div>
 
@@ -361,7 +333,75 @@
         </div>
     </div>
 
+    <!-- FIREBASE SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+
+        // === KONFIGURASI FIREBASE (GANTI PAKE PUNYA LU) ===
+        const firebaseConfig = {
+  apiKey: "AIzaSyAA1whaH5GeE4DQpiuDBMD2_dtyHFPTqRY",
+  authDomain: "ishimibo-ai.firebaseapp.com",
+  projectId: "ishimibo-ai",
+  storageBucket: "ishimibo-ai.firebasestorage.app",
+  messagingSenderId: "35700566561",
+  appId: "1:35700566561:web:abd91da974aebcef0f1160",
+  measurementId: "G-DDD9NVG133"
+};
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        // Ekspos ke global biar bisa dipanggil dari script biasa
+        window.firebaseAuth = auth;
+        window.firebaseDb = db;
+        window.googleProvider = provider;
+        window.signInWithPopup = signInWithPopup;
+        window.onAuthStateChanged = onAuthStateChanged;
+        window.signOut = signOut;
+        window.setDoc = setDoc;
+        window.getDoc = getDoc;
+        window.doc = doc;
+
+        // Listener Login Google
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // Simpan data user ke Firestore
+                const userRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(userRef);
+                
+                if (!docSnap.exists()) {
+                    await setDoc(userRef, {
+                        username: user.displayName,
+                        email: user.email,
+                        role: "free",
+                        joined: new Date().toISOString()
+                    });
+                }
+
+                // Set nama user ke UI
+                localStorage.setItem('ishimi_user', user.displayName);
+                currentUser = user.displayName;
+                document.getElementById('userNameDisplay').innerText = currentUser;
+                document.getElementById('userAvatar').innerText = currentUser.charAt(0).toUpperCase();
+                
+                // Sembunyiin login, munculin chat
+                document.getElementById('loginScreen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('mainChat').style.display = 'flex';
+                    if(Object.keys(chatThreads).length === 0) buatObrolanBaru();
+                    else { renderHistoryList(); renderChat(); renderInputArea(); }
+                }, 500);
+            }
+        });
+    </script>
+
     <script>
+        // === LOGIKA APP (SAMA SEPERTI SEBELUMNYA) ===
         const chatContainer = document.getElementById('chatContainer');
         const inputBox = document.getElementById('dynamicInputBox');
         const historyList = document.getElementById('historyList');
@@ -371,22 +411,25 @@
         const API_KEY = "kyzz119190745866";
         const FOTO_AI = "https://cdn.phototourl.com/member/2026-11-11-236aba0a-22c1-49fd-878c-9d2c4a9b3c6d.webp";
 
-        // ============================================
-        // KONFIGURASI DATABASE & TELEGRAM
-        // ============================================
-        const JSONBIN_URL = "https://api.jsonbin.io/v3/b/6af4f011ac6210605a80d6a7"; // <-- Ganti ini
-        const JSONBIN_API_KEY = "$2a$10$sSEzE8gK7Skof4mM9dg5FOdEt6ZbHQ.xfnsJjsUV/YqXowMSMNDR6"; // <-- Ganti ini
+        const JSONBIN_URL = "https://api.jsonbin.io/v3/b/6af4f011ac6210605a80d6a7"; 
+        const JSONBIN_API_KEY = "$2a$10$sSEzE8gK7Skof4mM9dg5FOdEt6ZbHQ.xfnsJjsUV/YqXowMSMNDR6"; 
         const TELEGRAM_BOT_TOKEN = "9151903420:AAH4fH56KVZ90vcbmT7v0ET_LYyJ4620Kzw";
         const TELEGRAM_CHAT_ID = "8421438133";
-        const DEV_PASSWORD = "grentzy123"; // Password buat masuk Panel Dev
+        const DEV_PASSWORD = "grentzy123"; 
 
         let isTyping = false;
         let currentAIModel = "ishimi"; 
         let currentToolMode = "chat"; 
         let attachedFileBase64 = null; 
-        let chatThreads = {};
-        let activeThreadId = "";
-        let currentUser = "";
+        
+        let chatThreads = JSON.parse(localStorage.getItem('ishimi_threads')) || {};
+        let activeThreadId = localStorage.getItem('ishimi_active_thread') || "";
+        let currentUser = localStorage.getItem('ishimi_user') || "";
+
+        function saveHistory() {
+            localStorage.setItem('ishimi_threads', JSON.stringify(chatThreads));
+            localStorage.setItem('ishimi_active_thread', activeThreadId);
+        }
 
         const aiDataInfo = {
             ishimi: { name: "Ishimi 大", desc: "Karakter AI utama dengan kepribadian tegas." },
@@ -396,39 +439,25 @@
             qwen: { name: "Qwen AI", desc: "AI dari Alibaba." }
         };
 
-        // === LOAD NOTIF DARI DATABASE CLOUD ===
         async function loadNotif() {
             let notifBar = document.getElementById('globalNotif');
             try {
-                let res = await fetch(JSONBIN_URL + "/latest", {
-                    headers: { "X-Master-Key": JSONBIN_API_KEY }
-                });
+                let res = await fetch(JSONBIN_URL + "/latest", { headers: { "X-Master-Key": JSONBIN_API_KEY } });
                 let data = await res.json();
-                
-                if(data.record && data.record.notif) {
-                    notifBar.innerText = data.record.notif;
-                    notifBar.style.display = 'block';
-                } else {
-                    notifBar.style.display = 'none';
-                }
-            } catch(e) {
-                console.log("Gagal load notif cloud", e);
-                notifBar.style.display = 'none';
-            }
+                if(data.record && data.record.notif) { notifBar.innerText = data.record.notif; notifBar.style.display = 'block'; } 
+                else { notifBar.style.display = 'none'; }
+            } catch(e) { notifBar.style.display = 'none'; }
         }
 
-        // LOGIN
         window.addEventListener('load', () => {
-            loadNotif(); // Panggil notif dari cloud
+            loadNotif(); 
             setTimeout(() => {
                 document.getElementById('splashScreen').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('splashScreen').style.display = 'none';
-                    let savedUser = localStorage.getItem('ishimi_user');
-                    if(savedUser) {
-                        currentUser = savedUser;
-                        loginSuccess();
-                    } else {
+                    // Cek login dari local storage dulu
+                    if(currentUser) { loginSuccess(); } 
+                    else {
                         document.getElementById('loginScreen').style.display = 'flex';
                         setTimeout(() => document.getElementById('loginScreen').style.opacity = '1', 50);
                     }
@@ -444,6 +473,18 @@
             loginSuccess();
         }
 
+        function loginGoogle() {
+            if(window.signInWithPopup && window.firebaseAuth) {
+                window.signInWithPopup(window.firebaseAuth, window.googleProvider).then((result) => {
+                    console.log("Google Login Sukses", result.user.displayName);
+                }).catch((error) => {
+                    alert("Login Google Gagal: " + error.message);
+                });
+            } else {
+                alert("Firebase belum siap. Cek konfigurasi.");
+            }
+        }
+
         function loginSuccess() {
             document.getElementById('loginScreen').style.opacity = '0';
             setTimeout(() => {
@@ -451,12 +492,18 @@
                 document.getElementById('mainChat').style.display = 'flex';
                 document.getElementById('userNameDisplay').innerText = currentUser;
                 document.getElementById('userAvatar').innerText = currentUser.charAt(0).toUpperCase();
-                if(Object.keys(chatThreads).length === 0) buatObrolanBaru();
+                if(Object.keys(chatThreads).length === 0 || !chatThreads[activeThreadId]) { buatObrolanBaru(); } 
                 else { renderHistoryList(); renderChat(); renderInputArea(); }
             }, 500);
         }
 
-        function logout() { localStorage.removeItem('ishimi_user'); location.reload(); }
+        function logout() { 
+            if(window.signOut && window.firebaseAuth) {
+                window.signOut(window.firebaseAuth);
+            }
+            localStorage.clear(); 
+            location.reload(); 
+        }
 
         function toggleSidebar() {
             let sb = document.getElementById('sidebar');
@@ -466,7 +513,6 @@
         }
         function bukaInfoWeb() { document.getElementById('modalInfoWeb').style.display = 'flex'; }
         function tutupInfoWeb() { document.getElementById('modalInfoWeb').style.display = 'none'; }
-        
         function bukaInfoAI() {
             let data = aiDataInfo[currentAIModel];
             document.getElementById('aiInfoTitle').innerText = data.name;
@@ -475,95 +521,50 @@
         }
         function tutupInfoAI() { document.getElementById('modalInfoAI').style.display = 'none'; }
 
-        // === LOGIKA PANEL DEV ===
         function bukaLapakDev() { document.getElementById('modalPanelDev').style.display = 'flex'; }
         function tutupLapakDev() { 
             document.getElementById('modalPanelDev').style.display = 'none'; 
             document.getElementById('devContent').style.display = 'none';
             document.getElementById('devPassword').value = '';
         }
-        
         function loginDev() {
-            let pass = document.getElementById('devPassword').value;
-            if(pass === DEV_PASSWORD) {
+            if(document.getElementById('devPassword').value === DEV_PASSWORD) {
                 document.getElementById('devContent').style.display = 'block';
-                let currentNotif = document.getElementById('globalNotif').innerText || "";
-                document.getElementById('devNotifInput').value = currentNotif;
-            } else {
-                alert("Password Salah, Kontol!");
-            }
+                document.getElementById('devNotifInput').value = document.getElementById('globalNotif').innerText || "";
+            } else { alert("Password Salah, Kontol!"); }
         }
-
         async function simpanNotif() {
             let teks = document.getElementById('devNotifInput').value;
             try {
                 let res = await fetch(JSONBIN_URL, {
-                    method: 'PUT',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-Master-Key": JSONBIN_API_KEY
-                    },
+                    method: 'PUT', headers: { "Content-Type": "application/json", "X-Master-Key": JSONBIN_API_KEY },
                     body: JSON.stringify({ notif: teks })
                 });
-                
-                if(res.ok) {
-                    alert("✅ Notifikasi Global Berhasil Di-Update!");
-                    loadNotif();
-                    tutupLapakDev();
-                } else {
-                    alert("❌ Gagal update notif.");
-                }
-            } catch(e) {
-                alert("❌ Error koneksi ke database.");
-            }
+                if(res.ok) { alert("✅ Notif Di-Update!"); loadNotif(); tutupLapakDev(); } 
+                else { alert("❌ Gagal update."); }
+            } catch(e) { alert("❌ Error koneksi."); }
         }
+        async function hapusNotif() { document.getElementById('devNotifInput').value = ""; await simpanNotif(); }
 
-        async function hapusNotif() {
-            document.getElementById('devNotifInput').value = "";
-            await simpanNotif();
-        }
-
-        // === LAPOR BUG ===
         function bukaLaporBug() { document.getElementById('modalLaporBug').style.display = 'flex'; }
         function tutupLaporBug() { document.getElementById('modalLaporBug').style.display = 'none'; }
-
         async function kirimLaporan() {
             let pesan = document.getElementById('bugInput').value.trim();
             if(!pesan) return alert("Isi laporannya dulu!");
-
             let btn = document.querySelector('#modalLaporBug .modal-btn');
-            btn.innerText = "⏳ Mengirim...";
-            btn.disabled = true;
-
+            btn.innerText = "⏳ Mengirim..."; btn.disabled = true;
             let teksLaporan = `🚨 *LAPORAN BUG BARU* 🚨\n\n👤 User: ${currentUser}\n📱 AI: ${currentAIModel.toUpperCase()}\n📝 Laporan: ${pesan}`;
-
             try {
                 let res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: TELEGRAM_CHAT_ID,
-                        text: teksLaporan,
-                        parse_mode: 'Markdown'
-                    })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: teksLaporan, parse_mode: 'Markdown' })
                 });
-                
-                if(res.ok) {
-                    alert("✅ Laporan terkirim ke Dev!");
-                    document.getElementById('bugInput').value = '';
-                    tutupLaporBug();
-                } else {
-                    alert("❌ Gagal kirim laporan.");
-                }
-            } catch(e) {
-                alert("❌ Error koneksi ke Telegram.");
-            } finally {
-                btn.innerText = "📩 Kirim Laporan";
-                btn.disabled = false;
-            }
+                if(res.ok) { alert("✅ Laporan terkirim!"); document.getElementById('bugInput').value = ''; tutupLaporBug(); } 
+                else { alert("❌ Gagal kirim."); }
+            } catch(e) { alert("❌ Error koneksi."); } 
+            finally { btn.innerText = "📩 Kirim Laporan"; btn.disabled = false; }
         }
 
-        // SISANYA SAMA...
         function switchTab(tab) {
             const tabAI = document.getElementById('tabAI');
             const tabFitur = document.getElementById('tabFitur');
@@ -571,19 +572,12 @@
             const fiturPanel = document.getElementById('fiturPanel');
             const chatInputWrapper = document.getElementById('chatInputWrapper');
 
-            
             if (tab === 'ai') {
                 tabAI.classList.add('active'); tabFitur.classList.remove('active');
-                dockAI.style.display = 'flex'; 
-                fiturPanel.style.display = 'none';
-                chatInputWrapper.style.display = 'block';
-                currentToolMode = 'chat';
+                dockAI.style.display = 'flex'; fiturPanel.style.display = 'none'; chatInputWrapper.style.display = 'block'; currentToolMode = 'chat';
             } else {
                 tabFitur.classList.add('active'); tabAI.classList.remove('active');
-                dockAI.style.display = 'none'; 
-                fiturPanel.style.display = 'flex';
-                chatInputWrapper.style.display = 'none';
-                setFiturMode('tiktok');
+                dockAI.style.display = 'none'; fiturPanel.style.display = 'flex'; chatInputWrapper.style.display = 'none'; setFiturMode('tiktok');
             }
         }
 
@@ -594,10 +588,7 @@
             const input = document.getElementById('fiturInput');
             const fileBtn = document.querySelector('.action-row .brutal-action-btn:nth-child(1)');
             const previewBox = document.getElementById('previewBox');
-            
-            previewBox.style.display = 'none';
-            previewBox.innerHTML = '';
-            input.value = '';
+            previewBox.style.display = 'none'; previewBox.innerHTML = ''; input.value = '';
 
             if (mode === 'tiktok') { title.innerText = "Downloader TikTok"; label.innerText = "Masukkan Link TikTok"; fileBtn.style.display = 'none'; }
             else if (mode === 'ig') { title.innerText = "Downloader Instagram"; label.innerText = "Masukkan Link Instagram"; fileBtn.style.display = 'none'; }
@@ -605,10 +596,7 @@
             else if (mode === 'hd') { title.innerText = "HD Video Enhancer"; label.innerText = "Link Video / Upload Galeri"; fileBtn.style.display = 'flex'; }
 
             if(!document.getElementById('fiturDock')) {
-                let dock = document.createElement('div');
-                dock.id = 'fiturDock';
-                dock.className = 'dock-container';
-                dock.style.marginBottom = '10px';
+                let dock = document.createElement('div'); dock.id = 'fiturDock'; dock.className = 'dock-container'; dock.style.marginBottom = '10px';
                 dock.innerHTML = `
                     <button class="dock-btn" onclick="setFiturMode('tiktok')">📱 TikTok</button>
                     <button class="dock-btn" onclick="setFiturMode('ig')">📸 Instagram</button>
@@ -624,8 +612,7 @@
             if(file) {
                 let url = URL.createObjectURL(file);
                 let box = document.getElementById('previewBox');
-                box.style.display = 'block';
-                box.innerHTML = `<p style="color:#fff; margin-bottom:5px;">Preview File:</p><video src="${url}" controls></video>`;
+                box.style.display = 'block'; box.innerHTML = `<p style="color:#fff; margin-bottom:5px;">Preview File:</p><video src="${url}" controls></video>`;
                 attachedFileBase64 = file;
             }
         }
@@ -634,15 +621,14 @@
             let id = "thread-" + Date.now();
             chatThreads[id] = { ai: currentAIModel, title: "Obrolan Baru", messages: [{ sender: 'ai', text: `Halo ${currentUser}! Ada yang bisa gua bantu?` }] };
             activeThreadId = id;
-            renderHistoryList(); renderChat(); renderInputArea();
+            saveHistory(); renderHistoryList(); renderChat(); renderInputArea();
             document.getElementById('sidebar').classList.remove('open');
             document.getElementById('sidebarOverlay').style.display = 'none';
         }
 
         function pilihObrolan(id) {
-            activeThreadId = id;
-            currentAIModel = chatThreads[id].ai;
-            renderHistoryList(); renderChat(); renderInputArea();
+            activeThreadId = id; currentAIModel = chatThreads[id].ai;
+            saveHistory(); renderHistoryList(); renderChat(); renderInputArea();
             document.getElementById('sidebar').classList.remove('open');
             document.getElementById('sidebarOverlay').style.display = 'none';
         }
@@ -666,7 +652,7 @@
                     div.className = `message ${msg.sender}`;
                     let bubble = document.createElement('div');
                     bubble.className = `bubble ${msg.sender}`;
-                    bubble.innerHTML = `<div class="chat-text">${msg.text}</div>`; // BUNGKUS CHAT TEXT
+                    bubble.innerHTML = `<div class="chat-text">${msg.text}</div>`;
                     if(msg.sender === 'ai') {
                         let img = document.createElement('img'); img.src = FOTO_AI; img.className = 'avatar-ai';
                         div.appendChild(img);
@@ -713,24 +699,30 @@
                 chatThreads[activeThreadId].title = input.substring(0, 15) + '...';
                 renderHistoryList();
             }
-            renderChat();
-            isTyping = true;
+            saveHistory(); renderChat(); isTyping = true;
 
             let tDiv = document.createElement('div'); tDiv.className = 'message ai'; tDiv.id = 'typing';
             tDiv.innerHTML = `<img src="${FOTO_AI}" class="avatar-ai"><div class="bubble ai"><div class="typing-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
             chatContainer.appendChild(tDiv); chatContainer.scrollTop = chatContainer.scrollHeight;
 
             let apiUrl = "";
-            if(currentAIModel === 'ishimi') apiUrl = `https://api.kyzzz.xyz/api/ai/alya?message=${encodeURIComponent("Anggap dirimu Ishimi 大. Pesan: " + input)}&session=${activeThreadId}&apikey=${API_KEY}`;
-            else if(currentAIModel === 'chatgpt') apiUrl = `https://api.kyzzz.xyz/api/ai/chatgpt?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
-            else if(currentAIModel === 'claude') apiUrl = `https://api.kyzzz.xyz/api/ai/claude?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
-            else if(currentAIModel === 'deepseek') apiUrl = `https://api.kyzzz.xyz/api/ai/deepseek?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
-            else if(currentAIModel === 'qwen') apiUrl = `https://api.kyzzz.xyz/api/ai/qwen?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
+            if(currentAIModel === 'ishimi') {
+                apiUrl = `https://api.kyzzz.xyz/api/ai/alya?message=${encodeURIComponent("Anggap dirimu Ishimi 大. Pesan: " + input)}&session=${activeThreadId}&apikey=${API_KEY}`;
+            } else if(currentAIModel === 'chatgpt') {
+                apiUrl = `https://api.kyzzz.xyz/api/ai/chatgpt?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
+            } else if(currentAIModel === 'claude') {
+                apiUrl = `https://api.kyzzz.xyz/api/ai/claude?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
+            } else if(currentAIModel === 'deepseek') {
+                apiUrl = `https://api.kyzzz.xyz/api/ai/deepseek?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
+            } else if(currentAIModel === 'qwen') {
+                apiUrl = `https://api.kyzzz.xyz/api/ai/qwen?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
+            }
 
             try {
                 let res = await fetch(`/api/proxy?url=${encodeURIComponent(apiUrl)}`);
                 let data = await res.json();
-                let reply = data.reply || data.message || data.response || "Gagal ambil respon.";
+                
+                let reply = data.reply || data.message || data.response || data.result?.answer || data.data?.answer || "Gagal ambil respon.";
                 if(currentAIModel === 'ishimi') reply = reply.replace(/Alya/gi, "Ishimi 大");
                 
                 chatThreads[activeThreadId].messages.push({ sender: 'ai', text: reply });
@@ -739,8 +731,7 @@
             } finally {
                 isTyping = false;
                 if(document.getElementById('typing')) document.getElementById('typing').remove();
-                renderChat();
-                clearFile();
+                saveHistory(); renderChat(); clearFile();
             }
         }
 
@@ -752,14 +743,13 @@
             
             let loadingMsg = document.createElement('p');
             loadingMsg.style.color = "#fff"; loadingMsg.innerText = "⏳ Sedang memproses...";
-            previewBox.style.display = 'block';
-            previewBox.innerHTML = ''; previewBox.appendChild(loadingMsg);
+            previewBox.style.display = 'block'; previewBox.innerHTML = ''; previewBox.appendChild(loadingMsg);
 
             let apiUrl = "";
             if (currentToolMode === 'tiktok') apiUrl = `https://api.kyzzz.xyz/api/download/tiktok?action=true&url=${encodeURIComponent(urlInput)}&apikey=${API_KEY}`;
             else if (currentToolMode === 'ig') apiUrl = `https://api.kyzzz.xyz/api/download/instagram?url=${encodeURIComponent(urlInput)}&apikey=${API_KEY}`;
             else if (currentToolMode === 'yt') apiUrl = `https://api.kyzzz.xyz/api/download/ytmp4?url=${encodeURIComponent(urlInput)}&quality=720&apikey=${API_KEY}`;
-            else if (currentToolMode === 'hd') apiUrl = `https://api.kyzzz.xyz/api/tools/hdvid?apikey=${API_KEY}&url=${encodeURIComponent(urlInput)}`;
+            else if (currentToolMode === 'hd') apiUrl = `https://api.kyzzz.xyz/api/hdvid?apikey=${API_KEY}&url=${encodeURIComponent(urlInput)}`;
 
             try {
                 let res = await fetch(`/api/proxy?url=${encodeURIComponent(apiUrl)}`);
