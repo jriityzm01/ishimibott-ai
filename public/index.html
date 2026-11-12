@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ishimi 大 - Brutalism</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0a0612; 
+            --text-main: #e2d9f3;     
+            --accent: #a855f7;        
+            --border-dark: #1a1126;
+            --shadow-strong: 5px 5px 0px #000000;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; }
+
+        /* Video Background */
+        #bg-video { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -2; }
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(18, 12, 28, 0.85); z-index: -1; pointer-events: none; }
+
+        /* SPLASH & LOGIN */
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-main); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s; }
+        .splash-title { font-size: 3.5rem; font-weight: 700; color: var(--accent); text-shadow: 4px 4px 0px #000; }
+        
+        #loginScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10, 6, 18, 0.9); display: none; justify-content: center; align-items: center; z-index: 9000; opacity: 0; transition: opacity 0.5s; }
+        .login-box { background: #1a1126; border: 4px solid var(--accent); padding: 40px 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 400px; box-shadow: 8px 8px 0px var(--accent); }
+        .login-box h2 { color: var(--text-main); margin-bottom: 10px; font-size: 2.5rem; font-weight: 700; text-shadow: 2px 2px 0px #000; }
+        .login-box p { color: #9b8bb4; margin-bottom: 25px; font-weight: 600; }
+        .login-box input { width: 100%; padding: 15px; border-radius: 5px; border: 3px solid #000; background: #0a0612; color: white; font-size: 16px; outline: none; margin-bottom: 20px; font-weight: 600; box-shadow: 4px 4px 0px #000; transition: 0.1s; }
+        .login-box input:focus { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000; }
+        .login-btn { width: 100%; padding: 15px; border-radius: 5px; border: 3px solid #000; background: var(--accent); color: white; font-weight: 700; font-size: 18px; cursor: pointer; box-shadow: 5px 5px 0px #000; transition: 0.1s; }
+        .login-btn:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0px #000; }
+
+        /* SIDEBAR */
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 45; }
+        .sidebar { width: 280px; background: #1a1126; display: flex; flex-direction: column; padding: 20px 15px; border-right: 4px solid #000; z-index: 50; transition: transform 0.3s; position: fixed; height: 100vh; left: -300px; }
+        .sidebar.open { transform: translateX(300px); box-shadow: 10px 0px 0px rgba(0,0,0,0.5); }
+        .user-profile { display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--accent); border: 3px solid #000; border-radius: 8px; margin-bottom: 20px; box-shadow: 4px 4px 0px #000; }
+        .user-avatar { width: 45px; height: 45px; border-radius: 5px; background: #000; color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 22px; border: 2px solid #000; }
+        .user-name { font-weight: 700; font-size: 18px; color: #000; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .new-chat-btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; border: 3px solid #000; border-radius: 8px; color: #000; background: #fff; cursor: pointer; font-size: 15px; font-weight: 700; transition: 0.1s; margin-bottom: 20px; width: 100%; box-shadow: 4px 4px 0px #000; }
+        .new-chat-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0px #000; }
+        .sidebar-history { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .history-item { padding: 12px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; color: #9b8bb4; background: #0a0612; border: 2px solid #333; transition: 0.2s; }
+        .history-item:hover { border-color: var(--accent); color: white; }
+        .history-item.active { background: var(--accent); color: white; border-color: #000; box-shadow: 3px 3px 0px #000; }
+        
+        .dev-panel-btn { margin-top: 10px; background: #222; border: 3px solid var(--accent); color: var(--accent); padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; box-shadow: 3px 3px 0px #000; width: 100%; transition: 0.1s; }
+        .dev-panel-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
+        
+        .logout-btn { margin-top: 15px; background: #ff4444; border: 3px solid #000; color: white; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 15px; box-shadow: 4px 4px 0px #000; transition: 0.1s; }
+        .logout-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0px #000; }
+
+        /* MAIN CHAT */
+        .main-chat { flex: 1; display: none; flex-direction: column; position: relative; z-index: 10; height: 100vh; overflow: hidden; width: 100%; }
+        .top-bar { display: flex; justify-content: space-between; padding: 15px 20px; background: #1a1126; border-bottom: 4px solid #000; align-items: center; }
+        .top-title { font-weight: 700; font-size: 20px; text-shadow: 2px 2px 0px #000; color: var(--accent); }
+        .info-btn { background: var(--accent); border: 3px solid #000; padding: 8px 15px; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0px #000; transition: 0.1s; display: flex; align-items: center; gap: 5px; }
+        .info-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
+
+        /* BANNER NOTIF */
+        #globalNotif { display: none; background: #ffd63a; color: #000; text-align: center; padding: 10px; font-weight: bold; border-bottom: 4px solid #000; font-size: 14px; z-index: 100; }
+
+        .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+        .message { display: flex; max-width: 800px; margin: 0 auto; width: 100%; gap: 12px; align-items: flex-end; }
+        .message.user { justify-content: flex-end; flex-direction: row-reverse; }
+        .message.ai { justify-content: flex-start; }
+        .avatar-ai { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; border: 3px solid #000; box-shadow: 3px 3px 0px #000; flex-shrink: 0; }
+        .bubble { position: relative; padding: 15px 20px; border-radius: 8px; font-size: 15px; line-height: 1.6; max-width: 80%; word-wrap: break-word; font-weight: 600; border: 3px solid #000; box-shadow: 5px 5px 0px #000; }
+        .bubble.user { background: var(--accent); color: #fff; border-bottom-right-radius: 0px; }
+        .bubble.ai { background: #1a1126; color: var(--text-main); border-bottom-left-radius: 0px; }
+        .chat-text a { color: #60a5fa; text-decoration: underline; }
+        .chat-text video, .chat-text img { max-width: 100%; border-radius: 5px; margin-top: 10px; border: 2px solid #000; box-shadow: 3px 3px 0px #000; }
+
+        /* INPUT & DOCK BARU */
+        .input-container { padding: 10px 15px 15px 15px; width: 100%; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+        
+        .menu-toggle-bar { display: flex; gap: 10px; margin-bottom: 5px; }
+        .menu-toggle-bar button { flex: 1; padding: 10px; border: 3px solid #000; border-radius: 8px; background: #1a1126; color: white; font-weight: bold; cursor: pointer; box-shadow: 3px 3px 0px #000; transition: 0.1s; }
+        .menu-toggle-bar button.active { background: var(--accent); }
+        .menu-toggle-bar button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
+
+        .dock-container { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .dock-container::-webkit-scrollbar { display: none; }
+        .dock-btn { background: #1a1126; color: var(--text-main); border: 3px solid #000; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.1s; box-shadow: 3px 3px 0px #000; display: flex; align-items: center; gap: 6px; }
+        .dock-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
+        .dock-btn.active { background: var(--accent); color: white; }
+        .dock-btn.info-ai-btn { background: #222; color: var(--accent); border-color: var(--accent); }
+        .dock-btn.report-btn { background: #ff4444; color: white; border-color: #000; }
+
+        /* ============ KOTAK FITUR ============ */
+        #fiturPanel { display: none; flex-direction: column; gap: 15px; margin-bottom: 15px; background: #1a1126; border: 4px solid var(--accent); border-radius: 15px; padding: 20px; box-shadow: 8px 8px 0px #000; }
+        #fiturPanel h3 { color: #fff; font-size: 1.2rem; margin-bottom: 5px; text-shadow: 2px 2px 0px #000; }
+        #fiturPanel label { color: #9b8bb4; font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; display: block; }
+        .brutal-input { width: 100%; padding: 12px 15px; border: 3px solid #000; border-radius: 8px; background: #0a0612; color: #fff; font-size: 15px; font-weight: 600; box-shadow: 3px 3px 0px #000; outline: none; transition: 0.1s; }
+        .brutal-input:focus { transform: translate(1px, 1px); box-shadow: 1px 1px 0px #000; }
+        
+        .action-row { display: flex; gap: 10px; margin-top: 10px; }
+        .brutal-action-btn { flex: 1; padding: 12px; border: 3px solid #000; border-radius: 8px; background: #fff; color: #000; font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0px #000; transition: 0.1s; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .brutal-action-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
+        .brutal-action-btn.pink { background: #ff5da2; color: white; }
+        
+        .preview-box { margin-top: 10px; padding: 15px; background: #0a0612; border: 3px dashed #444; border-radius: 8px; text-align: center; color: #666; font-weight: bold; display: none; }
+        .preview-box video, .preview-box img { max-width: 100%; border-radius: 5px; border: 2px solid #000; box-shadow: 3px 3px 0px #000; }
+
+        /* Input Chat Bawah */
+        .chat-input-wrapper { display: flex; flex-direction: column; gap: 10px; }
+        .input-box { background: #1a1126; border-radius: 8px; padding: 10px 15px; display: flex; align-items: center; gap: 12px; border: 3px solid var(--accent); box-shadow: 5px 5px 0px #000; }
+        textarea { flex: 1; background: transparent; border: none; color: var(--text-main); font-size: 16px; font-weight: 600; resize: none; max-height: 100px; outline: none; padding: 5px 0; }
+        textarea::placeholder { color: #666; }
+        .action-btn { background: #fff; border: 2px solid #000; color: #000; font-size: 18px; cursor: pointer; padding: 8px; border-radius: 5px; display: flex; align-items: center; justify-content: center; transition: 0.1s; box-shadow: 2px 2px 0px #000; }
+        .action-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px #000; }
+        .send-btn { background: var(--accent); color: white; border: 3px solid #000; width: 45px; height: 45px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.1s; box-shadow: 3px 3px 0px #000; flex-shrink: 0; font-size: 20px; }
+        .send-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
+        .send-btn:disabled { background: #4c3a66; cursor: not-allowed; }
+
+        .file-preview { display: none; margin-bottom: 5px; padding: 10px 15px; background: #1a1126; border: 3px solid var(--accent); border-radius: 8px; font-size: 14px; font-weight: 700; color: var(--accent); align-items: center; justify-content: space-between; box-shadow: 3px 3px 0px #000; }
+        .file-preview button { background: #ff4444; border: 2px solid #000; color: white; font-weight: bold; cursor: pointer; padding: 3px 10px; border-radius: 5px; box-shadow: 2px 2px 0px #000; }
+
+        .typing-dots { display: flex; gap: 6px; align-items: center; height: 24px; padding: 0 5px; }
+        .dot { width: 8px; height: 8px; background: var(--text-main); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; border: 1px solid #000; }
+        .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+        /* MODAL INFO */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: #1a1126; border: 4px solid var(--accent); border-radius: 15px; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto; padding: 30px; box-shadow: 10px 10px 0px #000; position: relative; }
+        .close-modal { position: sticky; top: 0; float: right; background: #ff4444; border: 3px solid #000; color: white; font-weight: 900; font-size: 20px; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; box-shadow: 3px 3px 0px #000; }
+        .close-modal:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
+        
+        .modal-content h1 { font-size: 2rem; color: var(--accent); margin-bottom: 20px; text-shadow: 2px 2px 0px #000; }
+        .modal-content p { font-size: 1rem; line-height: 1.7; color: #ccc; margin-bottom: 12px; font-weight: 500; }
+        .modal-content input, .modal-content textarea { width: 100%; padding: 15px; border: 3px solid #000; border-radius: 8px; background: #0a0612; color: #fff; font-size: 15px; font-weight: 600; box-shadow: 3px 3px 0px #000; outline: none; margin-bottom: 15px; resize: vertical; }
+        .modal-btn { width: 100%; padding: 15px; background: var(--accent); color: white; font-weight: 700; border: 3px solid #000; border-radius: 8px; cursor: pointer; box-shadow: 4px 4px 0px #000; font-size: 16px; margin-bottom: 10px;}
+        
+        .header-mobile { display: none; align-items: center; padding: 15px; background: #1a1126; border-bottom: 4px solid #000; z-index: 40; width: 100%; flex-shrink: 0; }
+        .menu-toggle { background: var(--accent); border: 3px solid #000; color: white; font-size: 24px; cursor: pointer; margin-right: 15px; padding: 5px 12px; border-radius: 5px; box-shadow: 3px 3px 0px #000; }
+        .menu-toggle:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .header-mobile { display: flex; }
+            .main-chat { height: calc(100vh - 70px); width: 100%; }
+            .top-bar { display: none; }
+            .bubble { max-width: 90%; }
+        }
+        /* ============ BUBBLE CHAT NEO-BRUTALISM ============ */
+.bubble { 
+    position: relative; 
+    padding: 15px 20px; 
+    border-radius: 8px; 
+    font-size: 15px; 
+    line-height: 1.6; 
+    max-width: 80%; 
+    word-wrap: break-word; 
+    font-weight: 600; 
+    border: 3px solid #000; 
+    box-shadow: 5px 5px 0px #000; 
+    display: flex; 
+    flex-direction: column;
+    z-index: 1; /* Penting biar teks aman */
+}
+
+.bubble.user { 
+    background: var(--accent); 
+    color: #fff; 
+    border-bottom-right-radius: 0px; 
+}
+
+/* BUBBLE AI PAKE BACKGROUND GAMBAR + KACA GELAP */
+.bubble.ai { 
+    background-image: url('https://cdn.phototourl.com/member/2026-11-11-236aba0a-22c1-49fd-878c-9d2c4a9b3c6d.webp');
+    background-size: cover;
+    background-position: center;
+    color: var(--text-main);
+    border-bottom-left-radius: 0px;
+}
+
+/* Lapisan Kaca Gelap Transparan */
+.bubble.ai::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(18, 12, 28, 0.85); /* 0.85 biar teks jelas */
+    backdrop-filter: blur(4px);
+    z-index: -1; /* Taruh di belakang teks, di depan gambar */
+    border-radius: 5px; /* Biar ngikutin sudut dalem */
+}
+
+/* Pastiin Teks di Paling Atas */
+.chat-text { 
+    position: relative; 
+    z-index: 2; 
+    text-shadow: 1px 1px 3px #000; /* Bayangan teks biar makin kebaca */
+}
+    </style>
+</head>
+<body>
+
+    <div id="splashScreen"><div class="splash-title">Ishimi 大</div></div>
+    <div id="loginScreen">
+        <div class="login-box">
+            <h2>Ishimi 大</h2>
+            <p>Masukin nama lu, Bro!</p>
+            <input type="text" id="usernameInput" placeholder="Nama lu..." maxlength="20">
+            <button class="login-btn" onclick="login()">MASUK</button>
+        </div>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="header-mobile">
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+        <span class="header-title" style="color:var(--accent); font-weight:bold; font-size:20px; text-shadow: 2px 2px 0px #000;">Ishimi 大</span>
+        <button class="info-btn" style="margin-left: auto;" onclick="bukaInfoWeb()">ℹ️ INFO</button>
+    </div>
+
+    <video id="bg-video" autoplay loop muted playsinline>
+        <source src="https://www.image2url.com/r2/default/videos/1794378865113-2c960894-f24d-4520-8f8b-a9ac5f8541cc.mp4" type="video/mp4">
+    </video>
+    <div class="bg-overlay"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="user-profile">
+            <div class="user-avatar" id="userAvatar">?</div>
+            <div class="user-name" id="userNameDisplay">User</div>
+        </div>
+        <button class="new-chat-btn" onclick="buatObrolanBaru()">+ OBROLAN BARU</button>
+        <div class="sidebar-history" id="historyList"></div>
+        
+        <!-- TOMBOL PANEL DEV -->
+        <button class="dev-panel-btn" onclick="bukaLapakDev()">🔐 Panel Dev</button>
+        <button class="logout-btn" onclick="logout()">LOGOUT</button>
+    </aside>
+
+    <main class="main-chat" id="mainChat">
+        <!-- BANNER NOTIFIKASI GLOBAL -->
+        <div id="globalNotif"></div>
+
+        <div class="top-bar">
+            <div class="top-title">Ishimi 大 Chat</div>
+            <button class="info-btn" onclick="bukaInfoWeb()">ℹ️ INFORMASI WEB</button>
+        </div>
+
+        <div class="chat-container" id="chatContainer"></div>
+
+        <div class="input-container">
+            
+            <div class="menu-toggle-bar">
+                <button id="tabAI" class="active" onclick="switchTab('ai')">🧠 Menu AI</button>
+                <button id="tabFitur" onclick="switchTab('fitur')">🛠️ Menu Fitur</button>
+            </div>
+
+            <!-- DOCK AI -->
+            <div class="dock-container" id="dockAI" style="display:flex;">
+                <button class="dock-btn active" onclick="changeAIMode('ishimi', this)">💀 Ishimi 大</button>
+                <button class="dock-btn" onclick="changeAIMode('chatgpt', this)">🤖 ChatGPT</button>
+                <button class="dock-btn" onclick="changeAIMode('claude', this)">📝 Claude</button>
+                <button class="dock-btn" onclick="changeAIMode('deepseek', this)">🐋 DeepSeek</button>
+                <button class="dock-btn" onclick="changeAIMode('qwen', this)">🌀 Qwen</button>
+                <button class="dock-btn info-ai-btn" onclick="bukaInfoAI()">ℹ️ Info AI</button>
+                <button class="dock-btn report-btn" onclick="bukaLaporBug()">🚨 Lapor Dev</button>
+            </div>
+
+            <!-- KOTAK FITUR BARU -->
+            <div id="fiturPanel">
+                <h3 id="fiturTitle">Download Video</h3>
+                <div>
+                    <label id="fiturLabel">Masukkan Link Video</label>
+                    <input type="text" id="fiturInput" class="brutal-input" placeholder="https://...">
+                </div>
+                <div class="action-row">
+                    <button class="brutal-action-btn" onclick="document.getElementById('fileUpload').click()">📁 Upload Galeri</button>
+                    <button class="brutal-action-btn pink" onclick="prosesFitur()">🚀 Proses</button>
+                </div>
+                <input type="file" id="fileUpload" style="display:none;" accept="video/*" onchange="previewFile(event)">
+                
+                <div class="preview-box" id="previewBox"></div>
+            </div>
+
+            <!-- masukan teks -->
+            <div class="chat-input-wrapper" id="chatInputWrapper">
+                <div class="file-preview" id="filePreview">
+                    <span id="fileName">📎 file.png</span>
+                    <button onclick="clearFile()">✖</button>
+                </div>
+                <div class="input-box" id="dynamicInputBox"></div>
+            </div>
+
+        </div>
+    </main>
+
+<!-- MODAL INFO WEB (LENGKAP) -->
+<div class="modal-overlay" id="modalInfoWeb">
+    <div class="modal-content">
+        <button class="close-modal" onclick="tutupInfoWeb()">X</button>
+        <h1>🚀 Panduan Lengkap: Dev & Aplikasi Multi-AI</h1>
+        
+        <h2>🧠 1. Pusat Multi-AI (Chatbot)</h2>
+        <p>Aplikasi ini bukan sekadar chatbot biasa — ini adalah hub multi-AI yang memungkinkan kamu berganti "otak" AI sesuai kebutuhan. Cukup tekan tombol AI di bagian bawah layar untuk berpindah model:</p>
+        <ul>
+            <li><strong>Ishimi 大:</strong> Karakter AI utama dengan kepribadian tegas, pintar, dan system prompt khusus.</li>
+            <li><strong>ChatGPT:</strong> Pertanyaan umum, menulis esai, atau bikin kode.</li>
+            <li><strong>Claude AI:</strong> Percakapan panjang & merapikan teks.</li>
+            <li><strong>DeepSeek & Qwen:</strong> Logika dan matematika.</li>
+        </ul>
+        <p><em>Fitur unggulan: Setiap AI punya memori (history) sendiri-sendiri. Jadi obrolanmu dengan ChatGPT tidak akan tercampur saat kamu pindah ke Ishimi. Kamu juga bisa membuat banyak thread obrolan baru lewat sidebar kiri.</em></p>
+
+        <h2>📥 2. Downloader Otomatis</h2>
+        <p>Selain untuk mengobrol, aplikasi ini juga berfungsi sebagai "tukang download". Tersedia tombol cepat untuk TikTok, Instagram, dan YouTube. Cukup paste link video, dan aplikasi akan memanggil API untuk mengambil video aslinya. Video langsung muncul dan bisa diputar di dalam chat — tanpa perlu membuka aplikasi lain.</p>
+
+        <h2>🎬 3. AI Video Enhancer (HD Video)</h2>
+        <p>Punya video buram atau kualitas rendah? Fitur HD Video memungkinkan kamu:</p>
+        <ul>
+            <li>Memasukkan link video atau mengunggah dari galeri.</li>
+            <li>Memilih target resolusi: 720p / 1080p / 4K.</li>
+            <li>Aplikasi memanggil API untuk meningkatkan kualitas video.</li>
+            <li>Kamu menerima link hasil video yang sudah di-upgrade.</li>
+        </ul>
+
+        <h2>📎 4. Dukungan Lampiran File</h2>
+        <p>Dalam mode chat AI, kamu bisa mengunggah gambar atau PDF melalui tombol klip kertas (📎) — mendukung percakapan berbasis dokumen dan visual.</p>
+
+        <h2>🎨 5. Desain Neo-Brutalism + Video Background</h2>
+        <p>Dari sisi tampilan, aplikasi ini mengusung gaya Neo-Brutalism (kotak tebal, bayangan keras, font bold). Kombinasi warna tema gelap (ungu/hitam) dipadukan dengan video background bergerak di belakangnya. Dilengkapi sistem login simpel dan animasi splash screen.</p>
+        <p><strong>Ringkasan:</strong> Satu aplikasi untuk chat multi-AI, download video sosial media, upgrade kualitas video ke HD/4K, dan upload file — semuanya dibungkus dalam desain Neo-Brutalism yang futuristik. 🎯</p>
+
+        <h2>👨‍💻 Tentang Kami — Tim Developer</h2>
+        <p>Aplikasi ini dikembangkan oleh dua developer yang berdedikasi di balik layar. Berikut perkenalan kami:</p>
+        <div class="dev-box">
+            <h3>🔥 JriiRyzz — The Architect</h3>
+            <p>JriiRyzz adalah otak di balik fondasi aplikasi ini. Ia bertanggung jawab atas:</p>
+            <ul>
+                <li><strong>Logika inti Multi-AI</strong> — merancang sistem switching antar model AI dengan manajemen history terpisah.</li>
+                <li><strong>Integrasi API</strong> — menghubungkan aplikasi dengan API chatbot, downloader, dan AI Enhancer.</li>
+                <li><strong>Arsitektur sistem</strong> — memastikan thread obrolan dan alur data berjalan mulus.</li>
+            </ul>
+        </div>
+        <div class="dev-box">
+            <h3>🎨 NATA — The Visioner</h3>
+            <p>NATA adalah jiwa kreatif di balik tampilan aplikasi. Perannya meliputi:</p>
+            <ul>
+                <li><strong>Desain Neo-Brutalism</strong> — merancang identitas visual dengan kotak tebal dan hard shadow.</li>
+                <li><strong>Tema & Estetika</strong> — memadukan warna ungu/hitam dengan video background.</li>
+                <li><strong>Pengalaman pengguna</strong> — splash screen animasi, sistem login simpel, dan tata letak nyaman.</li>
+            </ul>
+        </div>
+
+        <h2 style="border-bottom:none; text-align:center;">🤝 Kolaborasi Kami</h2>
+        <p style="text-align:center;"><strong>JriiRyzz membangun mesinnya. NATA memberi nyawanya.</strong><br>Bersama, kami menghadirkan satu aplikasi yang fungsional sekaligus berkarakter.</p>
+        
+        <p style="text-align:center; margin-top:20px; font-style:italic;">"Kami bikin ini bukan cuma buat jalan, tapi biar kamu betah pakai. Setiap fitur kami rancang dengan tujuan — dari ganti AI, download video, sampai upgrade ke 4K. Kalau ada masukan, kami selalu terbuka."<br>— JriiRyzz & NATA</p>
+        
+        <p style="text-align:center; color:var(--accent); font-weight:bold; margin-top:20px;">🚀 Dikembangkan dengan 🔥 oleh JriiRyzz & NATA — build with logic, design with soul.</p>
+    </div>
+</div>
+
+    <!-- MODAL INFO AI -->
+    <div class="modal-overlay" id="modalInfoAI">
+        <div class="modal-content" style="border-color: #fff; max-width: 500px;">
+            <button class="close-modal" onclick="tutupInfoAI()">X</button>
+            <h1 id="aiInfoTitle" style="color: #fff; margin-bottom: 10px;">Nama AI</h1>
+            <p id="aiInfoDesc" style="font-size: 1.1rem; color: #ddd;">Deskripsi...</p>
+        </div>
+    </div>
+
+    <!-- MODAL LAPOR BUG -->
+    <div class="modal-overlay" id="modalLaporBug">
+        <div class="modal-content" style="border-color: #ff4444; max-width: 500px;">
+            <button class="close-modal" onclick="tutupLaporBug()">X</button>
+            <h1 style="color: #ff4444; margin-bottom: 10px;">🚨 Lapor Masalah</h1>
+            <p>Jelaskan bug atau masalah yang lu alamin. Laporan bakal masuk ke Telegram Developer.</p>
+            <textarea id="bugInput" placeholder="Contoh: AI-nya error pas ngetik panjang..."></textarea>
+            <button class="modal-btn" style="background:#ff4444;" onclick="kirimLaporan()">📩 Kirim Laporan</button>
+        </div>
+    </div>
+
+    <!-- MODAL PANEL DEV -->
+    <div class="modal-overlay" id="modalPanelDev">
+        <div class="modal-content" style="border-color: #ffd63a;">
+            <button class="close-modal" onclick="tutupLapakDev()">X</button>
+            <h1 style="color: #ffd63a; margin-bottom: 10px;">🔐 Panel Developer</h1>
+            <p>Masukin password buat ngatur notifikasi global.</p>
+            <input type="password" id="devPassword" placeholder="Password Dev...">
+            <button class="modal-btn" style="background:#ffd63a; color:#000;" onclick="loginDev()">Masuk Panel</button>
+            
+            <div id="devContent" style="display:none; margin-top:20px; border-top: 2px dashed #444; padding-top: 15px;">
+                <label style="color:#fff; font-weight:bold; margin-bottom:5px; display:block;">Teks Notifikasi Global:</label>
+                <textarea id="devNotifInput" placeholder="Ketik notifikasi buat semua user..."></textarea>
+                <button class="modal-btn" style="background:#4ade80; color:#000;" onclick="simpanNotif()">💾 Simpan Notifikasi</button>
+                <button class="modal-btn" style="background:#ff4444;" onclick="hapusNotif()">🗑️ Hapus Notifikasi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chatContainer');
+        const inputBox = document.getElementById('dynamicInputBox');
+        const historyList = document.getElementById('historyList');
+        const filePreview = document.getElementById('filePreview');
+        const fileName = document.getElementById('fileName');
+        
+        const API_KEY = "kyzz119190745866";
+        const FOTO_AI = "https://cdn.phototourl.com/member/2026-11-11-236aba0a-22c1-49fd-878c-9d2c4a9b3c6d.webp";
+
+        // ============================================
+        // KONFIGURASI DATABASE & TELEGRAM
+        // ============================================
+        const JSONBIN_URL = "https://api.jsonbin.io/v3/b/6af4f011ac6210605a80d6a7"; // <-- Ganti ini
+        const JSONBIN_API_KEY = "$2a$10$sSEzE8gK7Skof4mM9dg5FOdEt6ZbHQ.xfnsJjsUV/YqXowMSMNDR6"; // <-- Ganti ini
+        const TELEGRAM_BOT_TOKEN = "9151903420:AAH4fH56KVZ90vcbmT7v0ET_LYyJ4620Kzw";
+        const TELEGRAM_CHAT_ID = "8421438133";
+        const DEV_PASSWORD = "grentzy123"; // Password buat masuk Panel Dev
+
+        let isTyping = false;
+        let currentAIModel = "ishimi"; 
+        let currentToolMode = "chat"; 
+        let attachedFileBase64 = null; 
+        let chatThreads = {};
+        let activeThreadId = "";
+        let currentUser = "";
+
+        const aiDataInfo = {
+            ishimi: { name: "Ishimi 大", desc: "Karakter AI utama dengan kepribadian tegas." },
+            chatgpt: { name: "ChatGPT", desc: "Model AI dari OpenAI." },
+            claude: { name: "Claude AI", desc: "AI dari Anthropic." },
+            deepseek: { name: "DeepSeek", desc: "AI dari China." },
+            qwen: { name: "Qwen AI", desc: "AI dari Alibaba." }
+        };
+
+        // === LOAD NOTIF DARI DATABASE CLOUD ===
+        async function loadNotif() {
+            let notifBar = document.getElementById('globalNotif');
+            try {
+                let res = await fetch(JSONBIN_URL + "/latest", {
+                    headers: { "X-Master-Key": JSONBIN_API_KEY }
+                });
+                let data = await res.json();
+                
+                if(data.record && data.record.notif) {
+                    notifBar.innerText = data.record.notif;
+                    notifBar.style.display = 'block';
+                } else {
+                    notifBar.style.display = 'none';
+                }
+            } catch(e) {
+                console.log("Gagal load notif cloud", e);
+                notifBar.style.display = 'none';
+            }
+        }
+
+        // LOGIN
+        window.addEventListener('load', () => {
+            loadNotif(); // Panggil notif dari cloud
+            setTimeout(() => {
+                document.getElementById('splashScreen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('splashScreen').style.display = 'none';
+                    let savedUser = localStorage.getItem('ishimi_user');
+                    if(savedUser) {
+                        currentUser = savedUser;
+                        loginSuccess();
+                    } else {
+                        document.getElementById('loginScreen').style.display = 'flex';
+                        setTimeout(() => document.getElementById('loginScreen').style.opacity = '1', 50);
+                    }
+                }, 500);
+            }, 1500);
+        });
+
+        function login() {
+            let name = document.getElementById('usernameInput').value.trim();
+            if(!name) return alert("Isi nama dulu, Bro!");
+            currentUser = name;
+            localStorage.setItem('ishimi_user', name);
+            loginSuccess();
+        }
+
+        function loginSuccess() {
+            document.getElementById('loginScreen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainChat').style.display = 'flex';
+                document.getElementById('userNameDisplay').innerText = currentUser;
+                document.getElementById('userAvatar').innerText = currentUser.charAt(0).toUpperCase();
+                if(Object.keys(chatThreads).length === 0) buatObrolanBaru();
+                else { renderHistoryList(); renderChat(); renderInputArea(); }
+            }, 500);
+        }
+
+        function logout() { localStorage.removeItem('ishimi_user'); location.reload(); }
+
+        function toggleSidebar() {
+            let sb = document.getElementById('sidebar');
+            let ov = document.getElementById('sidebarOverlay');
+            sb.classList.toggle('open');
+            if(sb.classList.contains('open')) ov.style.display = 'block'; else ov.style.display = 'none';
+        }
+        function bukaInfoWeb() { document.getElementById('modalInfoWeb').style.display = 'flex'; }
+        function tutupInfoWeb() { document.getElementById('modalInfoWeb').style.display = 'none'; }
+        
+        function bukaInfoAI() {
+            let data = aiDataInfo[currentAIModel];
+            document.getElementById('aiInfoTitle').innerText = data.name;
+            document.getElementById('aiInfoDesc').innerText = data.desc;
+            document.getElementById('modalInfoAI').style.display = 'flex';
+        }
+        function tutupInfoAI() { document.getElementById('modalInfoAI').style.display = 'none'; }
+
+        // === LOGIKA PANEL DEV ===
+        function bukaLapakDev() { document.getElementById('modalPanelDev').style.display = 'flex'; }
+        function tutupLapakDev() { 
+            document.getElementById('modalPanelDev').style.display = 'none'; 
+            document.getElementById('devContent').style.display = 'none';
+            document.getElementById('devPassword').value = '';
+        }
+        
+        function loginDev() {
+            let pass = document.getElementById('devPassword').value;
+            if(pass === DEV_PASSWORD) {
+                document.getElementById('devContent').style.display = 'block';
+                let currentNotif = document.getElementById('globalNotif').innerText || "";
+                document.getElementById('devNotifInput').value = currentNotif;
+            } else {
+                alert("Password Salah, Kontol!");
+            }
+        }
+
+        async function simpanNotif() {
+            let teks = document.getElementById('devNotifInput').value;
+            try {
+                let res = await fetch(JSONBIN_URL, {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Master-Key": JSONBIN_API_KEY
+                    },
+                    body: JSON.stringify({ notif: teks })
+                });
+                
+                if(res.ok) {
+                    alert("✅ Notifikasi Global Berhasil Di-Update!");
+                    loadNotif();
+                    tutupLapakDev();
+                } else {
+                    alert("❌ Gagal update notif.");
+                }
+            } catch(e) {
+                alert("❌ Error koneksi ke database.");
+            }
+        }
+
+        async function hapusNotif() {
+            document.getElementById('devNotifInput').value = "";
+            await simpanNotif();
+        }
+
+        // === LAPOR BUG ===
+        function bukaLaporBug() { document.getElementById('modalLaporBug').style.display = 'flex'; }
+        function tutupLaporBug() { document.getElementById('modalLaporBug').style.display = 'none'; }
+
+        async function kirimLaporan() {
+            let pesan = document.getElementById('bugInput').value.trim();
+            if(!pesan) return alert("Isi laporannya dulu!");
+
+            let btn = document.querySelector('#modalLaporBug .modal-btn');
+            btn.innerText = "⏳ Mengirim...";
+            btn.disabled = true;
+
+            let teksLaporan = `🚨 *LAPORAN BUG BARU* 🚨\n\n👤 User: ${currentUser}\n📱 AI: ${currentAIModel.toUpperCase()}\n📝 Laporan: ${pesan}`;
+
+            try {
+                let res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: teksLaporan,
+                        parse_mode: 'Markdown'
+                    })
+                });
+                
+                if(res.ok) {
+                    alert("✅ Laporan terkirim ke Dev!");
+                    document.getElementById('bugInput').value = '';
+                    tutupLaporBug();
+                } else {
+                    alert("❌ Gagal kirim laporan.");
+                }
+            } catch(e) {
+                alert("❌ Error koneksi ke Telegram.");
+            } finally {
+                btn.innerText = "📩 Kirim Laporan";
+                btn.disabled = false;
+            }
+        }
+
+        // SISANYA SAMA...
+        function switchTab(tab) {
+            const tabAI = document.getElementById('tabAI');
+            const tabFitur = document.getElementById('tabFitur');
+            const dockAI = document.getElementById('dockAI');
+            const fiturPanel = document.getElementById('fiturPanel');
+            const chatInputWrapper = document.getElementById('chatInputWrapper');
+
+            if (tab === 'ai') {
+                tabAI.classList.add('active'); tabFitur.classList.remove('active');
+                dockAI.style.display = 'flex'; 
+                fiturPanel.style.display = 'none';
+                chatInputWrapper.style.display = 'block';
+                currentToolMode = 'chat';
+            } else {
+                tabFitur.classList.add('active'); tabAI.classList.remove('active');
+                dockAI.style.display = 'none'; 
+                fiturPanel.style.display = 'flex';
+                chatInputWrapper.style.display = 'none';
+                setFiturMode('tiktok');
+            }
+        }
+
+        function setFiturMode(mode) {
+            currentToolMode = mode;
+            const title = document.getElementById('fiturTitle');
+            const label = document.getElementById('fiturLabel');
+            const input = document.getElementById('fiturInput');
+            const fileBtn = document.querySelector('.action-row .brutal-action-btn:nth-child(1)');
+            const previewBox = document.getElementById('previewBox');
+            
+            previewBox.style.display = 'none';
+            previewBox.innerHTML = '';
+            input.value = '';
+
+            if (mode === 'tiktok') { title.innerText = "Downloader TikTok"; label.innerText = "Masukkan Link TikTok"; fileBtn.style.display = 'none'; }
+            else if (mode === 'ig') { title.innerText = "Downloader Instagram"; label.innerText = "Masukkan Link Instagram"; fileBtn.style.display = 'none'; }
+            else if (mode === 'yt') { title.innerText = "Downloader YouTube"; label.innerText = "Masukkan Link YouTube"; fileBtn.style.display = 'none'; }
+            else if (mode === 'hd') { title.innerText = "HD Video Enhancer"; label.innerText = "Link Video / Upload Galeri"; fileBtn.style.display = 'flex'; }
+
+            if(!document.getElementById('fiturDock')) {
+                let dock = document.createElement('div');
+                dock.id = 'fiturDock';
+                dock.className = 'dock-container';
+                dock.style.marginBottom = '10px';
+                dock.innerHTML = `
+                    <button class="dock-btn" onclick="setFiturMode('tiktok')">📱 TikTok</button>
+                    <button class="dock-btn" onclick="setFiturMode('ig')">📸 Instagram</button>
+                    <button class="dock-btn" onclick="setFiturMode('yt')">▶️ YouTube</button>
+                    <button class="dock-btn" onclick="setFiturMode('hd')">🎬 HD Video</button>
+                `;
+                document.getElementById('fiturPanel').prepend(dock);
+            }
+        }
+
+        function previewFile(event) {
+            let file = event.target.files[0];
+            if(file) {
+                let url = URL.createObjectURL(file);
+                let box = document.getElementById('previewBox');
+                box.style.display = 'block';
+                box.innerHTML = `<p style="color:#fff; margin-bottom:5px;">Preview File:</p><video src="${url}" controls></video>`;
+                attachedFileBase64 = file;
+            }
+        }
+
+        function buatObrolanBaru() {
+            let id = "thread-" + Date.now();
+            chatThreads[id] = { ai: currentAIModel, title: "Obrolan Baru", messages: [{ sender: 'ai', text: `Halo ${currentUser}! Ada yang bisa gua bantu?` }] };
+            activeThreadId = id;
+            renderHistoryList(); renderChat(); renderInputArea();
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').style.display = 'none';
+        }
+
+        function pilihObrolan(id) {
+            activeThreadId = id;
+            currentAIModel = chatThreads[id].ai;
+            renderHistoryList(); renderChat(); renderInputArea();
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').style.display = 'none';
+        }
+
+        function renderHistoryList() {
+            historyList.innerHTML = '';
+            Object.keys(chatThreads).sort((a,b) => b.split('-')[1] - a.split('-')[1]).forEach(id => {
+                let div = document.createElement('div');
+                div.className = `history-item ${id === activeThreadId ? 'active' : ''}`;
+                div.innerText = chatThreads[id].title;
+                div.onclick = () => pilihObrolan(id);
+                historyList.appendChild(div);
+            });
+        }
+        
+        function renderChat() {
+            chatContainer.innerHTML = '';
+            if(chatThreads[activeThreadId]) {
+                chatThreads[activeThreadId].messages.forEach(msg => {
+                    let div = document.createElement('div');
+                    div.className = `message ${msg.sender}`;
+                    let bubble = document.createElement('div');
+                    bubble.className = `bubble ${msg.sender}`;
+                    bubble.innerHTML = msg.text;
+                    if(msg.sender === 'ai') {
+                        let img = document.createElement('img'); img.src = FOTO_AI; img.className = 'avatar-ai';
+                        div.appendChild(img);
+                    }
+                    div.appendChild(bubble);
+                    chatContainer.appendChild(div);
+                });
+            }
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function renderInputArea() {
+            inputBox.innerHTML = `
+                <input type="file" id="chatAttachment" style="display:none;" onchange="handleAttachment(event)">
+                <button class="action-btn" onclick="document.getElementById('chatAttachment').click()">📎</button>
+                <textarea id="userInput" placeholder="Ketik pesan..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();kirimChat();}"></textarea>
+                <button class="send-btn" onclick="kirimChat()">➤</button>
+            `;
+        }
+
+        function changeAIMode(mode, btn) {
+            currentAIModel = mode; 
+            document.querySelectorAll('#dockAI .dock-btn').forEach(b => { if(!b.classList.contains('info-ai-btn') && !b.classList.contains('report-btn')) b.classList.remove('active'); });
+            btn.classList.add('active');
+        }
+
+        function handleAttachment(event) {
+            let file = event.target.files[0];
+            if(file) {
+                let reader = new FileReader();
+                reader.onload = (e) => { attachedFileBase64 = e.target.result; filePreview.style.display='flex'; fileName.innerText="📎 "+file.name; };
+                reader.readAsDataURL(file);
+            }
+        }
+        function clearFile() { attachedFileBase64 = null; filePreview.style.display = 'none'; }
+
+        async function kirimChat() {
+            let input = document.getElementById('userInput').value.trim();
+            if(!input || isTyping) return;
+            document.getElementById('userInput').value = '';
+            
+            chatThreads[activeThreadId].messages.push({ sender: 'user', text: input });
+            if(chatThreads[activeThreadId].messages.length === 2) {
+                chatThreads[activeThreadId].title = input.substring(0, 15) + '...';
+                renderHistoryList();
+            }
+            renderChat();
+            isTyping = true;
+
+            let tDiv = document.createElement('div'); tDiv.className = 'message ai'; tDiv.id = 'typing';
+            tDiv.innerHTML = `<img src="${FOTO_AI}" class="avatar-ai"><div class="bubble ai"><div class="typing-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+            chatContainer.appendChild(tDiv); chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            let apiUrl = "";
+            if(currentAIModel === 'ishimi') apiUrl = `https://api.kyzzz.xyz/api/ai/sakana-ai?message=${encodeURIComponent("Anggap dirimu Ishimi 大. Pesan: " + input)}&session=${activeThreadId}&apikey=${API_KEY}`;
+            else if(currentAIModel === 'chatgpt') apiUrl = `https://api.kyzzz.xyz/api/ai/chatgpt?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
+            else if(currentAIModel === 'claude') apiUrl = `https://api.kyzzz.xyz/api/ai/claude?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
+            else if(currentAIModel === 'deepseek') apiUrl = `https://api.kyzzz.xyz/api/ai/deepseek?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
+            else if(currentAIModel === 'qwen') apiUrl = `https://api.kyzzz.xyz/api/ai/qwen?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
+
+            try {
+                let res = await fetch(`/api/proxy?url=${encodeURIComponent(apiUrl)}`);
+                let data = await res.json();
+                let reply = data.reply || data.message || data.response || "Gagal ambil respon.";
+                if(currentAIModel === 'ishimi') reply = reply.replace(/Alya/gi, "Ishimi 大");
+                
+                chatThreads[activeThreadId].messages.push({ sender: 'ai', text: reply });
+            } catch (err) {
+                chatThreads[activeThreadId].messages.push({ sender: 'ai', text: "[Sistem] Error koneksi ke API." });
+            } finally {
+                isTyping = false;
+                if(document.getElementById('typing')) document.getElementById('typing').remove();
+                renderChat();
+                clearFile();
+            }
+        }
+
+        async function prosesFitur() {
+            let urlInput = document.getElementById('fiturInput').value.trim();
+            let previewBox = document.getElementById('previewBox');
+            
+            if(!urlInput && !attachedFileBase64) return alert("Masukkan link atau upload file dulu, Bro!");
+            
+            let loadingMsg = document.createElement('p');
+            loadingMsg.style.color = "#fff"; loadingMsg.innerText = "⏳ Sedang memproses...";
+            previewBox.style.display = 'block';
+            previewBox.innerHTML = ''; previewBox.appendChild(loadingMsg);
+
+            let apiUrl = "";
+            if (currentToolMode === 'tiktok') apiUrl = `https://api.kyzzz.xyz/api/download/tiktok?action=true&url=${encodeURIComponent(urlInput)}&apikey=${API_KEY}`;
+            else if (currentToolMode === 'ig') apiUrl = `https://api.kyzzz.xyz/api/download/instagram?url=${encodeURIComponent(urlInput)}&apikey=${API_KEY}`;
+            else if (currentToolMode === 'yt') apiUrl = `https://api.kyzzz.xyz/api/download/ytmp4?url=${encodeURIComponent(urlInput)}&quality=720&apikey=${API_KEY}`;
+            else if (currentToolMode === 'hd') apiUrl = `https://api.kyzzz.xyz/api/tools/hdvid?apikey=${API_KEY}&url=${encodeURIComponent(urlInput)}`;
+
+            try {
+                let res = await fetch(`/api/proxy?url=${encodeURIComponent(apiUrl)}`);
+                let json = await res.json();
+                
+                let videoUrl = json.data?.play || json.data?.video || json.result?.video || json.url || json.result || null;
+
+                if (videoUrl && videoUrl.includes('http')) {
+                    previewBox.innerHTML = `<p style="color:#4ade80; margin-bottom:8px;">✅ Berhasil diproses!</p>
+                        <video src="${videoUrl}" controls style="width:100%; border-radius:8px; border:3px solid #000; box-shadow: 3px 3px 0px #000;"></video>
+                        <a href="${videoUrl}" target="_blank" style="display:inline-block; margin-top:10px; padding:10px; background:var(--accent); color:white; text-decoration:none; border:3px solid #000; box-shadow:3px 3px 0px #000; font-weight:bold; border-radius:5px;">📥 Download File</a>
+                    `;
+                } else {
+                    previewBox.innerHTML = `<p style="color:#f87171;">❌ Gagal mendapatkan link video. Pastikan link valid.</p>`;
+                }
+            } catch (err) {
+                previewBox.innerHTML = `<p style="color:#f87171;">❌ Error koneksi ke API.</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
