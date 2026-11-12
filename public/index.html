@@ -69,15 +69,29 @@
         .message.user { justify-content: flex-end; flex-direction: row-reverse; }
         .message.ai { justify-content: flex-start; }
         .avatar-ai { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; border: 3px solid #000; box-shadow: 3px 3px 0px #000; flex-shrink: 0; }
-        .bubble { position: relative; padding: 15px 20px; border-radius: 8px; font-size: 15px; line-height: 1.6; max-width: 80%; word-wrap: break-word; font-weight: 600; border: 3px solid #000; box-shadow: 5px 5px 0px #000; }
+        
+        /* BUBBLE CHAT NEO-BRUTALISM */
+        .bubble { position: relative; padding: 15px 20px; border-radius: 8px; font-size: 15px; line-height: 1.6; max-width: 80%; word-wrap: break-word; font-weight: 600; border: 3px solid #000; box-shadow: 5px 5px 0px #000; display: flex; flex-direction: column; z-index: 1; }
         .bubble.user { background: var(--accent); color: #fff; border-bottom-right-radius: 0px; }
-        .bubble.ai { background: #1a1126; color: var(--text-main); border-bottom-left-radius: 0px; }
+        
+        /* BACKGROUND AI + KACA GELAP */
+        .bubble.ai { 
+            background-image: url('https://cdn.phototourl.com/member/2026-11-11-236aba0a-22c1-49fd-878c-9d2c4a9b3c6d.webp'); 
+            background-size: cover; background-position: center; 
+            color: var(--text-main); border-bottom-left-radius: 0px; 
+        }
+        .bubble.ai::before { 
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+            background: rgba(18, 12, 28, 0.85); backdrop-filter: blur(4px); 
+            z-index: -1; border-radius: 5px; 
+        }
+        
+        .chat-text { position: relative; z-index: 2; text-shadow: 1px 1px 3px #000; }
         .chat-text a { color: #60a5fa; text-decoration: underline; }
         .chat-text video, .chat-text img { max-width: 100%; border-radius: 5px; margin-top: 10px; border: 2px solid #000; box-shadow: 3px 3px 0px #000; }
 
-        /* INPUT & DOCK BARU */
+        /* INPUT & DOCK */
         .input-container { padding: 10px 15px 15px 15px; width: 100%; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
-        
         .menu-toggle-bar { display: flex; gap: 10px; margin-bottom: 5px; }
         .menu-toggle-bar button { flex: 1; padding: 10px; border: 3px solid #000; border-radius: 8px; background: #1a1126; color: white; font-weight: bold; cursor: pointer; box-shadow: 3px 3px 0px #000; transition: 0.1s; }
         .menu-toggle-bar button.active { background: var(--accent); }
@@ -91,7 +105,7 @@
         .dock-btn.info-ai-btn { background: #222; color: var(--accent); border-color: var(--accent); }
         .dock-btn.report-btn { background: #ff4444; color: white; border-color: #000; }
 
-        /* ============ KOTAK FITUR ============ */
+        /* KOTAK FITUR */
         #fiturPanel { display: none; flex-direction: column; gap: 15px; margin-bottom: 15px; background: #1a1126; border: 4px solid var(--accent); border-radius: 15px; padding: 20px; box-shadow: 8px 8px 0px #000; }
         #fiturPanel h3 { color: #fff; font-size: 1.2rem; margin-bottom: 5px; text-shadow: 2px 2px 0px #000; }
         #fiturPanel label { color: #9b8bb4; font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; display: block; }
@@ -131,11 +145,20 @@
         .close-modal { position: sticky; top: 0; float: right; background: #ff4444; border: 3px solid #000; color: white; font-weight: 900; font-size: 20px; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; box-shadow: 3px 3px 0px #000; }
         .close-modal:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
         
-        .modal-content h1 { font-size: 2rem; color: var(--accent); margin-bottom: 20px; text-shadow: 2px 2px 0px #000; }
+        .modal-content h1 { font-size: 1.8rem; color: var(--accent); margin-bottom: 15px; text-shadow: 2px 2px 0px #000; }
+        .modal-content h2 { font-size: 1.4rem; color: #fff; margin-top: 25px; margin-bottom: 15px; border-bottom: 3px dashed #444; padding-bottom: 8px; }
         .modal-content p { font-size: 1rem; line-height: 1.7; color: #ccc; margin-bottom: 12px; font-weight: 500; }
-        .modal-content input, .modal-content textarea { width: 100%; padding: 15px; border: 3px solid #000; border-radius: 8px; background: #0a0612; color: #fff; font-size: 15px; font-weight: 600; box-shadow: 3px 3px 0px #000; outline: none; margin-bottom: 15px; resize: vertical; }
-        .modal-btn { width: 100%; padding: 15px; background: var(--accent); color: white; font-weight: 700; border: 3px solid #000; border-radius: 8px; cursor: pointer; box-shadow: 4px 4px 0px #000; font-size: 16px; margin-bottom: 10px;}
+        .modal-content ul { margin-left: 20px; margin-bottom: 15px; color: #ccc; font-weight: 500; font-size: 1rem; }
+        .modal-content li { margin-bottom: 8px; line-height: 1.5; }
+        .modal-content strong { color: var(--accent); }
         
+        .dev-box { background: #0a0612; border: 3px solid #444; padding: 20px; border-radius: 10px; margin-top: 15px; box-shadow: 4px 4px 0px #000; }
+        .dev-box h3 { color: var(--accent); font-size: 1.2rem; margin-bottom: 8px; text-shadow: 1px 1px 0px #000; }
+        
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #0a0612; border-left: 2px solid #000; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border: 2px solid #000; border-radius: 5px; }
+
         .header-mobile { display: none; align-items: center; padding: 15px; background: #1a1126; border-bottom: 4px solid #000; z-index: 40; width: 100%; flex-shrink: 0; }
         .menu-toggle { background: var(--accent); border: 3px solid #000; color: white; font-size: 24px; cursor: pointer; margin-right: 15px; padding: 5px 12px; border-radius: 5px; box-shadow: 3px 3px 0px #000; }
         .menu-toggle:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
@@ -147,55 +170,6 @@
             .top-bar { display: none; }
             .bubble { max-width: 90%; }
         }
-        /* ============ BUBBLE CHAT NEO-BRUTALISM ============ */
-.bubble { 
-    position: relative; 
-    padding: 15px 20px; 
-    border-radius: 8px; 
-    font-size: 15px; 
-    line-height: 1.6; 
-    max-width: 80%; 
-    word-wrap: break-word; 
-    font-weight: 600; 
-    border: 3px solid #000; 
-    box-shadow: 5px 5px 0px #000; 
-    display: flex; 
-    flex-direction: column;
-    z-index: 1; /* Penting biar teks aman */
-}
-
-.bubble.user { 
-    background: var(--accent); 
-    color: #fff; 
-    border-bottom-right-radius: 0px; 
-}
-
-/* BUBBLE AI PAKE BACKGROUND GAMBAR + KACA GELAP */
-.bubble.ai { 
-    background-image: url('https://cdn.phototourl.com/member/2026-11-11-236aba0a-22c1-49fd-878c-9d2c4a9b3c6d.webp');
-    background-size: cover;
-    background-position: center;
-    color: var(--text-main);
-    border-bottom-left-radius: 0px;
-}
-
-/* Lapisan Kaca Gelap Transparan */
-.bubble.ai::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(18, 12, 28, 0.85); /* 0.85 biar teks jelas */
-    backdrop-filter: blur(4px);
-    z-index: -1; /* Taruh di belakang teks, di depan gambar */
-    border-radius: 5px; /* Biar ngikutin sudut dalem */
-}
-
-/* Pastiin Teks di Paling Atas */
-.chat-text { 
-    position: relative; 
-    z-index: 2; 
-    text-shadow: 1px 1px 3px #000; /* Bayangan teks biar makin kebaca */
-}
     </style>
 </head>
 <body>
@@ -230,14 +204,11 @@
         </div>
         <button class="new-chat-btn" onclick="buatObrolanBaru()">+ OBROLAN BARU</button>
         <div class="sidebar-history" id="historyList"></div>
-        
-        <!-- TOMBOL PANEL DEV -->
         <button class="dev-panel-btn" onclick="bukaLapakDev()">🔐 Panel Dev</button>
         <button class="logout-btn" onclick="logout()">LOGOUT</button>
     </aside>
 
     <main class="main-chat" id="mainChat">
-        <!-- BANNER NOTIFIKASI GLOBAL -->
         <div id="globalNotif"></div>
 
         <div class="top-bar">
@@ -248,13 +219,11 @@
         <div class="chat-container" id="chatContainer"></div>
 
         <div class="input-container">
-            
             <div class="menu-toggle-bar">
                 <button id="tabAI" class="active" onclick="switchTab('ai')">🧠 Menu AI</button>
                 <button id="tabFitur" onclick="switchTab('fitur')">🛠️ Menu Fitur</button>
             </div>
 
-            <!-- DOCK AI -->
             <div class="dock-container" id="dockAI" style="display:flex;">
                 <button class="dock-btn active" onclick="changeAIMode('ishimi', this)">💀 Ishimi 大</button>
                 <button class="dock-btn" onclick="changeAIMode('chatgpt', this)">🤖 ChatGPT</button>
@@ -265,7 +234,6 @@
                 <button class="dock-btn report-btn" onclick="bukaLaporBug()">🚨 Lapor Dev</button>
             </div>
 
-            <!-- KOTAK FITUR BARU -->
             <div id="fiturPanel">
                 <h3 id="fiturTitle">Download Video</h3>
                 <div>
@@ -277,11 +245,9 @@
                     <button class="brutal-action-btn pink" onclick="prosesFitur()">🚀 Proses</button>
                 </div>
                 <input type="file" id="fileUpload" style="display:none;" accept="video/*" onchange="previewFile(event)">
-                
                 <div class="preview-box" id="previewBox"></div>
             </div>
 
-            <!-- masukan teks -->
             <div class="chat-input-wrapper" id="chatInputWrapper">
                 <div class="file-preview" id="filePreview">
                     <span id="fileName">📎 file.png</span>
@@ -289,74 +255,73 @@
                 </div>
                 <div class="input-box" id="dynamicInputBox"></div>
             </div>
-
         </div>
     </main>
 
-<!-- MODAL INFO WEB (LENGKAP) -->
-<div class="modal-overlay" id="modalInfoWeb">
-    <div class="modal-content">
-        <button class="close-modal" onclick="tutupInfoWeb()">X</button>
-        <h1>🚀 Panduan Lengkap: Dev & Aplikasi Multi-AI</h1>
-        
-        <h2>🧠 1. Pusat Multi-AI (Chatbot)</h2>
-        <p>Aplikasi ini bukan sekadar chatbot biasa — ini adalah hub multi-AI yang memungkinkan kamu berganti "otak" AI sesuai kebutuhan. Cukup tekan tombol AI di bagian bawah layar untuk berpindah model:</p>
-        <ul>
-            <li><strong>Ishimi 大:</strong> Karakter AI utama dengan kepribadian tegas, pintar, dan system prompt khusus.</li>
-            <li><strong>ChatGPT:</strong> Pertanyaan umum, menulis esai, atau bikin kode.</li>
-            <li><strong>Claude AI:</strong> Percakapan panjang & merapikan teks.</li>
-            <li><strong>DeepSeek & Qwen:</strong> Logika dan matematika.</li>
-        </ul>
-        <p><em>Fitur unggulan: Setiap AI punya memori (history) sendiri-sendiri. Jadi obrolanmu dengan ChatGPT tidak akan tercampur saat kamu pindah ke Ishimi. Kamu juga bisa membuat banyak thread obrolan baru lewat sidebar kiri.</em></p>
-
-        <h2>📥 2. Downloader Otomatis</h2>
-        <p>Selain untuk mengobrol, aplikasi ini juga berfungsi sebagai "tukang download". Tersedia tombol cepat untuk TikTok, Instagram, dan YouTube. Cukup paste link video, dan aplikasi akan memanggil API untuk mengambil video aslinya. Video langsung muncul dan bisa diputar di dalam chat — tanpa perlu membuka aplikasi lain.</p>
-
-        <h2>🎬 3. AI Video Enhancer (HD Video)</h2>
-        <p>Punya video buram atau kualitas rendah? Fitur HD Video memungkinkan kamu:</p>
-        <ul>
-            <li>Memasukkan link video atau mengunggah dari galeri.</li>
-            <li>Memilih target resolusi: 720p / 1080p / 4K.</li>
-            <li>Aplikasi memanggil API untuk meningkatkan kualitas video.</li>
-            <li>Kamu menerima link hasil video yang sudah di-upgrade.</li>
-        </ul>
-
-        <h2>📎 4. Dukungan Lampiran File</h2>
-        <p>Dalam mode chat AI, kamu bisa mengunggah gambar atau PDF melalui tombol klip kertas (📎) — mendukung percakapan berbasis dokumen dan visual.</p>
-
-        <h2>🎨 5. Desain Neo-Brutalism + Video Background</h2>
-        <p>Dari sisi tampilan, aplikasi ini mengusung gaya Neo-Brutalism (kotak tebal, bayangan keras, font bold). Kombinasi warna tema gelap (ungu/hitam) dipadukan dengan video background bergerak di belakangnya. Dilengkapi sistem login simpel dan animasi splash screen.</p>
-        <p><strong>Ringkasan:</strong> Satu aplikasi untuk chat multi-AI, download video sosial media, upgrade kualitas video ke HD/4K, dan upload file — semuanya dibungkus dalam desain Neo-Brutalism yang futuristik. 🎯</p>
-
-        <h2>👨‍💻 Tentang Kami — Tim Developer</h2>
-        <p>Aplikasi ini dikembangkan oleh dua developer yang berdedikasi di balik layar. Berikut perkenalan kami:</p>
-        <div class="dev-box">
-            <h3>🔥 JriiRyzz — The Architect</h3>
-            <p>JriiRyzz adalah otak di balik fondasi aplikasi ini. Ia bertanggung jawab atas:</p>
+    <!-- MODAL INFO WEB -->
+    <div class="modal-overlay" id="modalInfoWeb">
+        <div class="modal-content">
+            <button class="close-modal" onclick="tutupInfoWeb()">X</button>
+            <h1>🚀 Panduan Lengkap: Dev & Aplikasi Multi-AI</h1>
+            
+            <h2>🧠 1. Pusat Multi-AI (Chatbot)</h2>
+            <p>Aplikasi ini bukan sekadar chatbot biasa — ini adalah hub multi-AI yang memungkinkan kamu berganti "otak" AI sesuai kebutuhan. Cukup tekan tombol AI di bagian bawah layar untuk berpindah model:</p>
             <ul>
-                <li><strong>Logika inti Multi-AI</strong> — merancang sistem switching antar model AI dengan manajemen history terpisah.</li>
-                <li><strong>Integrasi API</strong> — menghubungkan aplikasi dengan API chatbot, downloader, dan AI Enhancer.</li>
-                <li><strong>Arsitektur sistem</strong> — memastikan thread obrolan dan alur data berjalan mulus.</li>
+                <li><strong>Ishimi 大:</strong> Karakter AI utama dengan kepribadian tegas, pintar, dan system prompt khusus.</li>
+                <li><strong>ChatGPT:</strong> Pertanyaan umum, menulis esai, atau bikin kode.</li>
+                <li><strong>Claude AI:</strong> Percakapan panjang & merapikan teks.</li>
+                <li><strong>DeepSeek & Qwen:</strong> Logika dan matematika.</li>
             </ul>
-        </div>
-        <div class="dev-box">
-            <h3>🎨 NATA — The Visioner</h3>
-            <p>NATA adalah jiwa kreatif di balik tampilan aplikasi. Perannya meliputi:</p>
-            <ul>
-                <li><strong>Desain Neo-Brutalism</strong> — merancang identitas visual dengan kotak tebal dan hard shadow.</li>
-                <li><strong>Tema & Estetika</strong> — memadukan warna ungu/hitam dengan video background.</li>
-                <li><strong>Pengalaman pengguna</strong> — splash screen animasi, sistem login simpel, dan tata letak nyaman.</li>
-            </ul>
-        </div>
+            <p><em>Fitur unggulan: Setiap AI punya memori (history) sendiri-sendiri. Jadi obrolanmu dengan ChatGPT tidak akan tercampur saat kamu pindah ke Ishimi. Kamu juga bisa membuat banyak thread obrolan baru lewat sidebar kiri.</em></p>
 
-        <h2 style="border-bottom:none; text-align:center;">🤝 Kolaborasi Kami</h2>
-        <p style="text-align:center;"><strong>JriiRyzz membangun mesinnya. NATA memberi nyawanya.</strong><br>Bersama, kami menghadirkan satu aplikasi yang fungsional sekaligus berkarakter.</p>
-        
-        <p style="text-align:center; margin-top:20px; font-style:italic;">"Kami bikin ini bukan cuma buat jalan, tapi biar kamu betah pakai. Setiap fitur kami rancang dengan tujuan — dari ganti AI, download video, sampai upgrade ke 4K. Kalau ada masukan, kami selalu terbuka."<br>— JriiRyzz & NATA</p>
-        
-        <p style="text-align:center; color:var(--accent); font-weight:bold; margin-top:20px;">🚀 Dikembangkan dengan 🔥 oleh JriiRyzz & NATA — build with logic, design with soul.</p>
+            <h2>📥 2. Downloader Otomatis</h2>
+            <p>Selain untuk mengobrol, aplikasi ini juga berfungsi sebagai "tukang download". Tersedia tombol cepat untuk TikTok, Instagram, dan YouTube. Cukup paste link video, dan aplikasi akan memanggil API untuk mengambil video aslinya. Video langsung muncul dan bisa diputar di dalam chat — tanpa perlu membuka aplikasi lain.</p>
+
+            <h2>🎬 3. AI Video Enhancer (HD Video)</h2>
+            <p>Punya video buram atau kualitas rendah? Fitur HD Video memungkinkan kamu:</p>
+            <ul>
+                <li>Memasukkan link video atau mengunggah dari galeri.</li>
+                <li>Memilih target resolusi: 720p / 1080p / 4K.</li>
+                <li>Aplikasi memanggil API untuk meningkatkan kualitas video.</li>
+                <li>Kamu menerima link hasil video yang sudah di-upgrade.</li>
+            </ul>
+
+            <h2>📎 4. Dukungan Lampiran File</h2>
+            <p>Dalam mode chat AI, kamu bisa mengunggah gambar atau PDF melalui tombol klip kertas (📎) — mendukung percakapan berbasis dokumen dan visual.</p>
+
+            <h2>🎨 5. Desain Neo-Brutalism + Video Background</h2>
+            <p>Dari sisi tampilan, aplikasi ini mengusung gaya Neo-Brutalism (kotak tebal, bayangan keras, font bold). Kombinasi warna tema gelap (ungu/hitam) dipadukan dengan video background bergerak di belakangnya. Dilengkapi sistem login simpel dan animasi splash screen.</p>
+            <p><strong>Ringkasan:</strong> Satu aplikasi untuk chat multi-AI, download video sosial media, upgrade kualitas video ke HD/4K, dan upload file — semuanya dibungkus dalam desain Neo-Brutalism yang futuristik. 🎯</p>
+
+            <h2>👨‍💻 Tentang Kami — Tim Developer</h2>
+            <p>Aplikasi ini dikembangkan oleh dua developer yang berdedikasi di balik layar. Berikut perkenalan kami:</p>
+            <div class="dev-box">
+                <h3>🔥 JriiRyzz — The Architect</h3>
+                <p>JriiRyzz adalah otak di balik fondasi aplikasi ini. Ia bertanggung jawab atas:</p>
+                <ul>
+                    <li><strong>Logika inti Multi-AI</strong> — merancang sistem switching antar model AI dengan manajemen history terpisah.</li>
+                    <li><strong>Integrasi API</strong> — menghubungkan aplikasi dengan API chatbot, downloader, dan AI Enhancer.</li>
+                    <li><strong>Arsitektur sistem</strong> — memastikan thread obrolan dan alur data berjalan mulus.</li>
+                </ul>
+            </div>
+            <div class="dev-box">
+                <h3>🎨 NATA — The Visioner</h3>
+                <p>NATA adalah jiwa kreatif di balik tampilan aplikasi. Perannya meliputi:</p>
+                <ul>
+                    <li><strong>Desain Neo-Brutalism</strong> — merancang identitas visual dengan kotak tebal dan hard shadow.</li>
+                    <li><strong>Tema & Estetika</strong> — memadukan warna ungu/hitam dengan video background.</li>
+                    <li><strong>Pengalaman pengguna</strong> — splash screen animasi, sistem login simpel, dan tata letak nyaman.</li>
+                </ul>
+            </div>
+
+            <h2 style="border-bottom:none; text-align:center;">🤝 Kolaborasi Kami</h2>
+            <p style="text-align:center;"><strong>JriiRyzz membangun mesinnya. NATA memberi nyawanya.</strong><br>Bersama, kami menghadirkan satu aplikasi yang fungsional sekaligus berkarakter.</p>
+            
+            <p style="text-align:center; margin-top:20px; font-style:italic;">"Kami bikin ini bukan cuma buat jalan, tapi biar kamu betah pakai. Setiap fitur kami rancang dengan tujuan — dari ganti AI, download video, sampai upgrade ke 4K. Kalau ada masukan, kami selalu terbuka."<br>— JriiRyzz & NATA</p>
+            
+            <p style="text-align:center; color:var(--accent); font-weight:bold; margin-top:20px;">🚀 Dikembangkan dengan 🔥 oleh JriiRyzz & NATA — build with logic, design with soul.</p>
+        </div>
     </div>
-</div>
 
     <!-- MODAL INFO AI -->
     <div class="modal-overlay" id="modalInfoAI">
@@ -606,6 +571,7 @@
             const fiturPanel = document.getElementById('fiturPanel');
             const chatInputWrapper = document.getElementById('chatInputWrapper');
 
+            
             if (tab === 'ai') {
                 tabAI.classList.add('active'); tabFitur.classList.remove('active');
                 dockAI.style.display = 'flex'; 
@@ -700,7 +666,7 @@
                     div.className = `message ${msg.sender}`;
                     let bubble = document.createElement('div');
                     bubble.className = `bubble ${msg.sender}`;
-                    bubble.innerHTML = msg.text;
+                    bubble.innerHTML = `<div class="chat-text">${msg.text}</div>`; // BUNGKUS CHAT TEXT
                     if(msg.sender === 'ai') {
                         let img = document.createElement('img'); img.src = FOTO_AI; img.className = 'avatar-ai';
                         div.appendChild(img);
@@ -755,7 +721,7 @@
             chatContainer.appendChild(tDiv); chatContainer.scrollTop = chatContainer.scrollHeight;
 
             let apiUrl = "";
-            if(currentAIModel === 'ishimi') apiUrl = `https://api.kyzzz.xyz/api/ai/sakana-ai?message=${encodeURIComponent("Anggap dirimu Ishimi 大. Pesan: " + input)}&session=${activeThreadId}&apikey=${API_KEY}`;
+            if(currentAIModel === 'ishimi') apiUrl = `https://api.kyzzz.xyz/api/ai/alya?message=${encodeURIComponent("Anggap dirimu Ishimi 大. Pesan: " + input)}&session=${activeThreadId}&apikey=${API_KEY}`;
             else if(currentAIModel === 'chatgpt') apiUrl = `https://api.kyzzz.xyz/api/ai/chatgpt?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
             else if(currentAIModel === 'claude') apiUrl = `https://api.kyzzz.xyz/api/ai/claude?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
             else if(currentAIModel === 'deepseek') apiUrl = `https://api.kyzzz.xyz/api/ai/deepseek?prompt=${encodeURIComponent(input)}&apikey=${API_KEY}`;
