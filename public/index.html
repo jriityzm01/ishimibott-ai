@@ -3,15 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ishimi 大 - Brutalism</title>
+    <title>Ishimi 大</title>
+    <link rel="manifest" href="/manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --bg-main: #0a0612; --text-main: #e2d9f3; --accent: #a855f7; --border-dark: #1a1126; --shadow-strong: 5px 5px 0px #000000;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
-        body { background-color: var(--bg-main); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; }
+        body { background-color: var(--bg-main); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; padding-bottom: 70px; }
 
+        /* Tema Dinamis */
+        .theme-chatgpt { --accent: #10a37f; }
+        .theme-claude { --accent: #d97706; }
+        .theme-deepseek { --accent: #2563eb; }
+        .theme-qwen { --accent: #dc2626; }
+
+        /* BACKGROUND */
         #bg-video { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -2; }
         .bg-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(18, 12, 28, 0.85); z-index: -1; pointer-events: none; }
 
@@ -31,24 +40,24 @@
 
         /* SIDEBAR */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 45; }
-        .sidebar { width: 280px; background: #1a1126; display: flex; flex-direction: column; padding: 20px 15px; border-right: 4px solid #000; z-index: 50; transition: transform 0.3s; position: fixed; height: 100vh; left: -300px; }
+        .sidebar { width: 280px; background: #1a1126; display: flex; flex-direction: column; padding: 20px 15px; border-right: 4px solid #000; z-index: 50; transition: transform 0.3s; position: fixed; height: calc(100vh - 70px); left: -300px; }
         .sidebar.open { transform: translateX(300px); box-shadow: 10px 0px 0px rgba(0,0,0,0.5); }
         .user-profile { display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--accent); border: 3px solid #000; border-radius: 8px; margin-bottom: 20px; box-shadow: 4px 4px 0px #000; }
         .user-avatar { width: 45px; height: 45px; border-radius: 5px; background: #000; color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 22px; border: 2px solid #000; }
         .user-name { font-weight: 700; font-size: 18px; color: #000; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .new-chat-btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; border: 3px solid #000; border-radius: 8px; color: #000; background: #fff; cursor: pointer; font-size: 15px; font-weight: 700; transition: 0.1s; margin-bottom: 20px; width: 100%; box-shadow: 4px 4px 0px #000; }
         .new-chat-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0px #000; }
-        .sidebar-history { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .sidebar-history { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
         .history-item { padding: 12px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; color: #9b8bb4; background: #0a0612; border: 2px solid #333; transition: 0.2s; }
         .history-item:hover { border-color: var(--accent); color: white; }
         .history-item.active { background: var(--accent); color: white; border-color: #000; box-shadow: 3px 3px 0px #000; }
-        .dev-panel-btn { margin-top: 10px; background: #222; border: 3px solid var(--accent); color: var(--accent); padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; box-shadow: 3px 3px 0px #000; width: 100%; transition: 0.1s; }
+        .dev-panel-btn { margin-top: 10px; background: #222; border: 3px solid var(--accent); color: var(--accent); padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; box-shadow: 3px 3px 0px #000; width: 100%; transition: 0.1s; margin-bottom: 10px; }
         .dev-panel-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
-        .logout-btn { margin-top: 15px; background: #ff4444; border: 3px solid #000; color: white; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 15px; box-shadow: 4px 4px 0px #000; transition: 0.1s; }
+        .logout-btn { background: #ff4444; border: 3px solid #000; color: white; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 15px; box-shadow: 4px 4px 0px #000; transition: 0.1s; }
         .logout-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0px #000; }
 
         /* MAIN CHAT */
-        .main-chat { flex: 1; display: none; flex-direction: column; position: relative; z-index: 10; height: 100vh; overflow: hidden; width: 100%; }
+        .main-chat { flex: 1; display: none; flex-direction: column; position: relative; z-index: 10; height: calc(100vh - 70px); overflow: hidden; width: 100%; }
         .top-bar { display: flex; justify-content: space-between; padding: 15px 20px; background: #1a1126; border-bottom: 4px solid #000; align-items: center; }
         .top-title { font-weight: 700; font-size: 20px; text-shadow: 2px 2px 0px #000; color: var(--accent); }
         .info-btn { background: var(--accent); border: 3px solid #000; padding: 8px 15px; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0px #000; transition: 0.1s; display: flex; align-items: center; gap: 5px; }
@@ -69,11 +78,8 @@
         .chat-text a { color: #60a5fa; text-decoration: underline; }
         .chat-text video, .chat-text img { max-width: 100%; border-radius: 5px; margin-top: 10px; border: 2px solid #000; box-shadow: 3px 3px 0px #000; }
 
-        .input-container { position: fixed; bottom: 0; left: 0; right: 0; padding: 10px 15px 15px 15px; width: 100%; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; background: linear-gradient(to top, rgba(10, 6, 18, 1) 70%, transparent); z-index: 20; }
-        .menu-toggle-bar { display: flex; gap: 10px; margin-bottom: 5px; }
-        .menu-toggle-bar button { flex: 1; padding: 10px; border: 3px solid #000; border-radius: 8px; background: #1a1126; color: white; font-weight: bold; cursor: pointer; box-shadow: 3px 3px 0px #000; transition: 0.1s; }
-        .menu-toggle-bar button.active { background: var(--accent); }
-        .menu-toggle-bar button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
+        .input-container { position: fixed; bottom: 70px; left: 0; right: 0; padding: 10px 15px 15px 15px; width: 100%; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; background: linear-gradient(to top, rgba(10, 6, 18, 1) 70%, transparent); z-index: 20; }
+        
         .dock-container { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
         .dock-container::-webkit-scrollbar { display: none; }
         .dock-btn { background: #1a1126; color: var(--text-main); border: 3px solid #000; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.1s; box-shadow: 3px 3px 0px #000; display: flex; align-items: center; gap: 6px; }
@@ -111,6 +117,7 @@
         .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
+        /* MODAL */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: #1a1126; border: 4px solid var(--accent); border-radius: 15px; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto; padding: 30px; box-shadow: 10px 10px 0px #000; position: relative; }
         .close-modal { position: sticky; top: 0; float: right; background: #ff4444; border: 3px solid #000; color: white; font-weight: 900; font-size: 20px; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; box-shadow: 3px 3px 0px #000; }
@@ -134,27 +141,56 @@
         .menu-toggle { background: var(--accent); border: 3px solid #000; color: white; font-size: 24px; cursor: pointer; margin-right: 15px; padding: 5px 12px; border-radius: 5px; box-shadow: 3px 3px 0px #000; }
         .menu-toggle:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
 
+        /* ============ BOTTOM NAVIGATION BAR ============ */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100vw; height: 70px;
+            background: rgba(26, 17, 38, 0.75); backdrop-filter: blur(15px);
+            border-top: 3px solid var(--accent); z-index: 100;
+            display: flex; justify-content: space-around; align-items: center;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #9b8bb4; font-size: 10px; font-weight: 700; cursor: pointer;
+            transition: 0.2s; flex: 1; padding: 5px;
+        }
+        .nav-item span { font-size: 20px; margin-bottom: 2px; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item:active { transform: scale(0.9); }
+
+        /* WELCOME SCREEN */
+        .welcome-screen {
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 20px; height: 100%;
+        }
+        .welcome-screen h2 { font-size: 2rem; color: var(--accent); margin-bottom: 10px; text-shadow: 2px 2px 0px #000; }
+        .welcome-screen p { font-size: 1rem; color: #ccc; line-height: 1.6; max-width: 600px; margin-bottom: 20px; }
+        .welcome-screen .dev-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
+        .welcome-screen .dev-item { background: #1a1126; border: 2px solid #000; padding: 10px 15px; border-radius: 8px; box-shadow: 3px 3px 0px #000; font-size: 14px; font-weight: 600; }
+        .welcome-screen .dev-item span { color: var(--accent); }
+
         @media (max-width: 768px) {
             body { flex-direction: column; }
             .header-mobile { display: flex; }
-            .main-chat { height: calc(100vh - 70px); width: 100%; }
+            .main-chat { height: calc(100vh - 140px); width: 100%; }
             .top-bar { display: none; }
             .bubble { max-width: 90%; }
-            .chat-container { padding-bottom: 380px; }
+            .chat-container { padding-bottom: 20px; }
             .input-container { left: 0; right: 0; width: 100%; max-width: 100%; border-radius: 0; }
         }
     </style>
 </head>
-<body>
+<body class="theme-ishimi">
 
+       <!-- SPLASH & LOGIN -->
     <div id="splashScreen"><div class="splash-title">Ishimi 大</div></div>
     <div id="loginScreen">
         <div class="login-box">
             <h2>Ishimi 大</h2>
             <p>Masukin nama lu, Bro!</p>
             <input type="text" id="usernameInput" placeholder="Nama lu..." maxlength="20">
+            <input type="password" id="passwordInput" placeholder="Password lu..." maxlength="20">
             <button class="login-btn" onclick="login()">MASUK</button>
-            <!-- TOMBOL LOGIN GOOGLE -->
             <button class="login-google-btn" onclick="loginGoogle()">
                 <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
                 Masuk dengan Google
@@ -188,20 +224,30 @@
 
     <main class="main-chat" id="mainChat">
         <div id="globalNotif"></div>
-
         <div class="top-bar">
             <div class="top-title">Ishimi 大 Chat</div>
             <button class="info-btn" onclick="bukaInfoWeb()">ℹ️ INFORMASI WEB</button>
         </div>
 
+        <!-- CHAT CONTAINER -->
         <div class="chat-container" id="chatContainer"></div>
 
-        <div class="input-container">
-            <div class="menu-toggle-bar">
-                <button id="tabAI" class="active" onclick="switchTab('ai')">🧠 Menu AI</button>
-                <button id="tabFitur" onclick="switchTab('fitur')">🛠️ Menu Fitur</button>
+        <!-- WELCOME SCREEN (MUNCUL PAS KLIK HOME) -->
+        <div class="welcome-screen" id="welcomeScreen">
+            <h2>👋 Selamat Datang di Ishimi 大!</h2>
+            <p>Halo <strong id="welcomeUserName">User</strong>, terima kasih udah mampir. Aplikasi ini dibangun dengan penuh dedikasi oleh tim developer hebat di balik layar.</p>
+            <p style="font-size: 0.9rem; color: #9b8bb4; margin-top: 5px;">Mereka adalah orang-orang di balik layar yang bikin semua ini jalan:</p>
+            <div class="dev-list">
+                <div class="dev-item"><span>🔥 JriiRyzz</span> — The Architect</div>
+                <div class="dev-item"><span>🎨 NATA</span> — The Visioner</div>
+                <div class="dev-item"><span>🛠️ Said</span> — Tim Pendukung</div>
+                <div class="dev-item"><span>🛠️ Ifdal</span> — Tim Pendukung</div>
+                <div class="dev-item"><span>🛠️ Bima</span> — Tim Pendukung</div>
             </div>
+            <p style="font-size: 0.85rem; color: var(--accent); margin-top: 15px;">Gunakan menu di bawah buat mulai ngobrol sama AI atau download video.</p>
+        </div>
 
+        <div class="input-container" id="chatInputSection">
             <div class="dock-container" id="dockAI" style="display:flex;">
                 <button class="dock-btn active" onclick="changeAIMode('ishimi', this)">💀 Ishimi 大</button>
                 <button class="dock-btn" onclick="changeAIMode('chatgpt', this)">🤖 ChatGPT</button>
@@ -236,6 +282,22 @@
         </div>
     </main>
 
+    <!-- BOTTOM NAVIGATION BAR -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="showHome()" id="navHome">
+            <span>🏠</span> Home
+        </div>
+        <div class="nav-item" onclick="showAIMenu()" id="navAI">
+            <span>🧠</span> AI
+        </div>
+        <div class="nav-item" onclick="showFiturMenu()" id="navFitur">
+            <span>🛠️</span> Fitur
+        </div>
+        <div class="nav-item" onclick="bukaPanduan()">
+            <span>📖</span> Panduan
+        </div>
+    </div>
+
     <!-- MODAL INFO WEB (TEKS PANJANG) -->
     <div class="modal-overlay" id="modalInfoWeb">
         <div class="modal-content">
@@ -247,7 +309,7 @@
                 <h3>🔥 JriiRyzz — The Architect</h3>
                 <p>JriiRyzz adalah otak di balik fondasi aplikasi ini. Ia adalah tipe developer yang tidak pernah puas dengan "yang penting jalan" — baginya, setiap baris kode harus punya alasan, setiap fungsi harus efisien, dan setiap bug adalah tantangan yang harus ditaklukkan. Ia bertanggung jawab atas:</p>
                 <ul>
-                    <li><strong>🧠 Logika inti Multi-AI</strong> — merancang sistem switching antar model AI (Ishimi, ChatGPT, Claude, DeepSeek, Qwen) dengan manajemen history terpisah per AI.</li>
+                    <li><strong>🧠 Logika inti Multi-AI</strong> — merancang sistem switching antar model AI dengan manajemen history terpisah per AI.</li>
                     <li><strong>🔗 Integrasi API</strong> — menghubungkan aplikasi dengan berbagai layanan: API chatbot, downloader, hingga AI Video Enhancer.</li>
                     <li><strong>⚙️ Arsitektur sistem</strong> — memastikan thread obrolan, sidebar, dan alur data berjalan mulus tanpa lag.</li>
                     <li><strong>🛡️ Stabilitas & performa</strong> — optimasi, debugging, dan pengujian agar aplikasi tetap ringan dan responsif.</li>
@@ -332,6 +394,36 @@
             </div>
         </div>
     </div>
+    
+    <!-- MODAL PANDUAN -->
+    <div class="modal-overlay" id="modalPanduan">
+        <div class="modal-content" style="border-color: #4ade80;">
+            <button class="close-modal" onclick="tutupPanduan()">X</button>
+            <h1 style="color: #4ade80;">📖 Panduan Penggunaan</h1>
+            
+            <h2>🧠 Cara Kerja Menu AI</h2>
+            <ul>
+                <li><strong>Pilih AI</strong>: Klik salah satu tombol (Ishimi, ChatGPT, Claude, dll) di atas kolom chat.</li>
+                <li><strong>Tema Berubah</strong>: Warna aplikasi & placeholder akan otomatis berubah sesuai AI yang dipilih.</li>
+                <li><strong>History Terpisah</strong>: Setiap AI punya memori sendiri. Obrolan di ChatGPT gak bakal kecampur sama Claude.</li>
+            </ul>
+
+            <h2>🛠️ Cara Kerja Menu Fitur</h2>
+            <ul>
+                <li><strong>Pilih Fitur</strong>: Klik tombol TikTok, IG, YT, atau HD di atas kolom input.</li>
+                <li><strong>Input</strong>: Masukkan link video (atau upload file untuk HD Video).</li>
+                <li><strong>Proses</strong>: Klik tombol "Proses" buat ngejalanin API.</li>
+                <li><strong>Hasil</strong>: Video bakal muncul dan bisa langsung diputar/di-download.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    </script>
 
     <!-- FIREBASE SDK -->
     <script type="module">
@@ -339,60 +431,36 @@
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-        // === KONFIGURASI FIREBASE (GANTI PAKE PUNYA LU) ===
         const firebaseConfig = {
-  apiKey: "AIzaSyAA1whaH5GeE4DQpiuDBMD2_dtyHFPTqRY",
-  authDomain: "ishimibo-ai.firebaseapp.com",
-  projectId: "ishimibo-ai",
-  storageBucket: "ishimibo-ai.firebasestorage.app",
-  messagingSenderId: "35700566561",
-  appId: "1:35700566561:web:abd91da974aebcef0f1160",
-  measurementId: "G-DDD9NVG133"
-};
+            apiKey: "GANTI_API_KEY_LU", authDomain: "GANTI_AUTH_DOMAIN_LU", projectId: "GANTI_PROJECT_ID_LU", storageBucket: "GANTI_STORAGE_BUCKET_LU", messagingSenderId: "GANTI_SENDER_ID_LU", appId: "GANTI_APP_ID_LU"
+        };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        // Ekspos ke global biar bisa dipanggil dari script biasa
-        window.firebaseAuth = auth;
-        window.firebaseDb = db;
-        window.googleProvider = provider;
-        window.signInWithPopup = signInWithPopup;
-        window.onAuthStateChanged = onAuthStateChanged;
-        window.signOut = signOut;
-        window.setDoc = setDoc;
-        window.getDoc = getDoc;
-        window.doc = doc;
+        window.firebaseAuth = auth; window.firebaseDb = db; window.googleProvider = provider;
+        window.signInWithPopup = signInWithPopup; window.onAuthStateChanged = onAuthStateChanged; window.signOut = signOut;
+        window.setDoc = setDoc; window.getDoc = getDoc; window.doc = doc;
 
-        // Listener Login Google
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // Simpan data user ke Firestore
                 const userRef = doc(db, "users", user.uid);
                 const docSnap = await getDoc(userRef);
-                
                 if (!docSnap.exists()) {
-                    await setDoc(userRef, {
-                        username: user.displayName,
-                        email: user.email,
-                        role: "free",
-                        joined: new Date().toISOString()
-                    });
+                    await setDoc(userRef, { username: user.displayName, email: user.email, role: "free", joined: new Date().toISOString() });
                 }
-
-                // Set nama user ke UI
                 localStorage.setItem('ishimi_user', user.displayName);
                 currentUser = user.displayName;
                 document.getElementById('userNameDisplay').innerText = currentUser;
                 document.getElementById('userAvatar').innerText = currentUser.charAt(0).toUpperCase();
                 
-                // Sembunyiin login, munculin chat
                 document.getElementById('loginScreen').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('loginScreen').style.display = 'none';
                     document.getElementById('mainChat').style.display = 'flex';
+                    document.getElementById('welcomeUserName').innerText = currentUser;
                     if(Object.keys(chatThreads).length === 0) buatObrolanBaru();
                     else { renderHistoryList(); renderChat(); renderInputArea(); }
                 }, 500);
@@ -400,8 +468,8 @@
         });
     </script>
 
+    <!-- LOGIKA UTAMA -->
     <script>
-        // === LOGIKA APP (SAMA SEPERTI SEBELUMNYA) ===
         const chatContainer = document.getElementById('chatContainer');
         const inputBox = document.getElementById('dynamicInputBox');
         const historyList = document.getElementById('historyList');
@@ -455,7 +523,6 @@
                 document.getElementById('splashScreen').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('splashScreen').style.display = 'none';
-                    // Cek login dari local storage dulu
                     if(currentUser) { loginSuccess(); } 
                     else {
                         document.getElementById('loginScreen').style.display = 'flex';
@@ -466,12 +533,19 @@
         });
 
         function login() {
-            let name = document.getElementById('usernameInput').value.trim();
-            if(!name) return alert("Isi nama dulu, Bro!");
-            currentUser = name;
-            localStorage.setItem('ishimi_user', name);
-            loginSuccess();
-        }
+    let name = document.getElementById('usernameInput').value.trim();
+    let pass = document.getElementById('passwordInput').value.trim();
+    
+    if(!name || !pass) return alert("Isi nama & password dulu, Bro!");
+    
+    // Simpen username & password ke localStorage (Buat contoh simpel)
+    // Di real app, ini harusnya dicek ke database
+    localStorage.setItem('ishimi_user', name);
+    localStorage.setItem('ishimi_pass', pass); 
+    
+    currentUser = name;
+    loginSuccess();
+}
 
         function loginGoogle() {
             if(window.signInWithPopup && window.firebaseAuth) {
@@ -480,9 +554,7 @@
                 }).catch((error) => {
                     alert("Login Google Gagal: " + error.message);
                 });
-            } else {
-                alert("Firebase belum siap. Cek konfigurasi.");
-            }
+            } else { alert("Firebase belum siap. Cek konfigurasi."); }
         }
 
         function loginSuccess() {
@@ -492,17 +564,15 @@
                 document.getElementById('mainChat').style.display = 'flex';
                 document.getElementById('userNameDisplay').innerText = currentUser;
                 document.getElementById('userAvatar').innerText = currentUser.charAt(0).toUpperCase();
+                document.getElementById('welcomeUserName').innerText = currentUser;
                 if(Object.keys(chatThreads).length === 0 || !chatThreads[activeThreadId]) { buatObrolanBaru(); } 
                 else { renderHistoryList(); renderChat(); renderInputArea(); }
             }, 500);
         }
 
         function logout() { 
-            if(window.signOut && window.firebaseAuth) {
-                window.signOut(window.firebaseAuth);
-            }
-            localStorage.clear(); 
-            location.reload(); 
+            if(window.signOut && window.firebaseAuth) window.signOut(window.firebaseAuth);
+            localStorage.clear(); location.reload(); 
         }
 
         function toggleSidebar() {
@@ -549,36 +619,76 @@
         function bukaLaporBug() { document.getElementById('modalLaporBug').style.display = 'flex'; }
         function tutupLaporBug() { document.getElementById('modalLaporBug').style.display = 'none'; }
         async function kirimLaporan() {
-            let pesan = document.getElementById('bugInput').value.trim();
-            if(!pesan) return alert("Isi laporannya dulu!");
-            let btn = document.querySelector('#modalLaporBug .modal-btn');
-            btn.innerText = "⏳ Mengirim..."; btn.disabled = true;
-            let teksLaporan = `🚨 *LAPORAN BUG BARU* 🚨\n\n👤 User: ${currentUser}\n📱 AI: ${currentAIModel.toUpperCase()}\n📝 Laporan: ${pesan}`;
-            try {
-                let res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: teksLaporan, parse_mode: 'Markdown' })
-                });
-                if(res.ok) { alert("✅ Laporan terkirim!"); document.getElementById('bugInput').value = ''; tutupLaporBug(); } 
-                else { alert("❌ Gagal kirim."); }
-            } catch(e) { alert("❌ Error koneksi."); } 
-            finally { btn.innerText = "📩 Kirim Laporan"; btn.disabled = false; }
+    let pesan = document.getElementById('bugInput').value.trim();
+    if(!pesan) return alert("Isi laporannya dulu!");
+    
+    let btn = document.querySelector('#modalLaporBug .modal-btn');
+    btn.innerText = "⏳ Mengirim..."; btn.disabled = true;
+    
+    let teksLaporan = `🚨 LAPORAN BUG BARU 🚨\n\n👤 User: ${currentUser}\n📱 AI: ${currentAIModel.toUpperCase()}\n📝 Laporan: ${pesan}`;
+    
+    try {
+        // Pake URLSearchParams biar formatnya bener buat Telegram
+        let formData = new URLSearchParams();
+        formData.append('chat_id', TELEGRAM_CHAT_ID);
+        formData.append('text', teksLaporan);
+        
+        let res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            body: formData
+        });
+        
+        let data = await res.json();
+        
+        if(data.ok) { 
+            alert("✅ Laporan terkirim ke Dev!"); 
+            document.getElementById('bugInput').value = ''; 
+            tutupLaporBug(); 
+        } else { 
+            alert("❌ Gagal kirim: " + data.description); 
+        }
+    } catch(e) { 
+        alert("❌ Error koneksi: " + e.message); 
+    } finally { 
+        btn.innerText = "📩 Kirim Laporan"; btn.disabled = false; 
+    }
+}
+        
+        // === NAVIGASI TAB ===
+        function showHome() {
+            setActiveNav('navHome');
+            document.getElementById('welcomeScreen').style.display = 'flex';
+            document.getElementById('chatContainer').style.display = 'none';
+            document.getElementById('chatInputSection').style.display = 'none';
         }
 
-        function switchTab(tab) {
-            const tabAI = document.getElementById('tabAI');
-            const tabFitur = document.getElementById('tabFitur');
-            const dockAI = document.getElementById('dockAI');
-            const fiturPanel = document.getElementById('fiturPanel');
-            const chatInputWrapper = document.getElementById('chatInputWrapper');
+        function showAIMenu() {
+            setActiveNav('navAI');
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('chatContainer').style.display = 'flex';
+            document.getElementById('chatInputSection').style.display = 'flex';
+            
+            document.getElementById('dockAI').style.display = 'flex';
+            document.getElementById('fiturPanel').style.display = 'none';
+            document.getElementById('chatInputWrapper').style.display = 'block';
+            currentToolMode = 'chat';
+        }
 
-            if (tab === 'ai') {
-                tabAI.classList.add('active'); tabFitur.classList.remove('active');
-                dockAI.style.display = 'flex'; fiturPanel.style.display = 'none'; chatInputWrapper.style.display = 'block'; currentToolMode = 'chat';
-            } else {
-                tabFitur.classList.add('active'); tabAI.classList.remove('active');
-                dockAI.style.display = 'none'; fiturPanel.style.display = 'flex'; chatInputWrapper.style.display = 'none'; setFiturMode('tiktok');
-            }
+        function showFiturMenu() {
+            setActiveNav('navFitur');
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('chatContainer').style.display = 'flex';
+            document.getElementById('chatInputSection').style.display = 'flex';
+            
+            document.getElementById('dockAI').style.display = 'none';
+            document.getElementById('fiturPanel').style.display = 'flex';
+            document.getElementById('chatInputWrapper').style.display = 'none';
+            setFiturMode('tiktok');
+        }
+
+        function setActiveNav(id) {
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
 
         function setFiturMode(mode) {
@@ -606,7 +716,7 @@
                 document.getElementById('fiturPanel').prepend(dock);
             }
         }
-
+        
         function previewFile(event) {
             let file = event.target.files[0];
             if(file) {
@@ -677,6 +787,22 @@
             currentAIModel = mode; 
             document.querySelectorAll('#dockAI .dock-btn').forEach(b => { if(!b.classList.contains('info-ai-btn') && !b.classList.contains('report-btn')) b.classList.remove('active'); });
             btn.classList.add('active');
+
+            document.body.className = '';
+            if(mode === 'chatgpt') document.body.classList.add('theme-chatgpt');
+            else if(mode === 'claude') document.body.classList.add('theme-claude');
+            else if(mode === 'deepseek') document.body.classList.add('theme-deepseek');
+            else if(mode === 'qwen') document.body.classList.add('theme-qwen');
+            else document.body.classList.add('theme-ishimi');
+
+            let inputEl = document.getElementById('userInput');
+            if(inputEl) {
+                if(mode === 'chatgpt') inputEl.placeholder = "Tanya ChatGPT...";
+                else if(mode === 'claude') inputEl.placeholder = "Tanya Claude...";
+                else if(mode === 'deepseek') inputEl.placeholder = "Tanya DeepSeek...";
+                else if(mode === 'qwen') inputEl.placeholder = "Tanya Qwen...";
+                else inputEl.placeholder = "Ketik pesan...";
+            }
         }
 
         function handleAttachment(event) {
@@ -769,6 +895,10 @@
                 previewBox.innerHTML = `<p style="color:#f87171;">❌ Error koneksi ke API.</p>`;
             }
         }
+        
+        function bukaPanduan() { document.getElementById('modalPanduan').style.display = 'flex'; }
+        function tutupPanduan() { document.getElementById('modalPanduan').style.display = 'none'; }
+
     </script>
 </body>
 </html>

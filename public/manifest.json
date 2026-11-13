@@ -1,0 +1,15 @@
+{
+  "name": "Ishimi 大",
+  "short_name": "Ishimi",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0612",
+  "theme_color": "#a855f7",
+  "icons": [
+    {
+      "src": "https://cdn.phototourl.com/member/2026-11-11-236aba0a-22c1-49fd-878c-9d2c4a9b3c6d.webp",
+      "sizes": "512x512",
+      "type": "image/webp"
+    }
+  ]
+}
